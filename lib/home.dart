@@ -1,41 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
-// import 'transfermodule/transfer.dart';
-// import 'bill/topup.dart';
-// import 'bill/billpayment.dart';
-// import 'bill/airline.dart';
-// import 'body/govermment.dart';
 import 'footer/it_support_solution.dart';
 import 'footer/issue_report_page.dart';
-// import 'body/help.dart';
-// import 'body/support.dart';
 import 'body/exchangerate.dart';
-import 'auth/biometric_auth.dart';
 import 'auth/login.dart';
-// import 'body/event.dart';
-// import 'beneficiary/add_beneficiary.dart';
-// import 'beneficiary/manage_beneficiary.dart';
-// import 'beneficiary/transfer_to_beneficiary.dart';
-// import 'beneficiary/send_money_tobeneficiary.dart';
-// import 'transfermodule/transfermodule.dart';
-// import 'wallet/wallettransfermodule.dart';
-// import 'wallet/kacha.dart';
-// import 'wallet/ebirr.dart';
-// import 'wallet/cbebirr.dart';
-// import 'wallet/tellbirr.dart';
-// import 'transfermodule/transfer_to_other_bank_page.dart';
-// import 'transfermodule/international_transfer_page.dart';
-// import 'transfermodule/localmoneytransfer.dart';
-// import 'bill/billpaymentmodule.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../global_state.dart';
-// import '../constants.dart';
-// import 'transfermodule/account.dart';
-// import 'transfermodule/scheduletransfer.dart';
-
+import 'AdminHomePage.dart';
 class HomePage extends StatefulWidget {
   final String token;
   final String username; // Add this
@@ -45,12 +19,9 @@ class HomePage extends StatefulWidget {
     required this.token,
     required this.username, // Add this
   });
-
   @override
   _HomePageState createState() => _HomePageState();
 }
-
-
 class _HomePageState extends State<HomePage> {
   late String username = "";
   late String accountname = "";
@@ -116,8 +87,6 @@ class _HomePageState extends State<HomePage> {
     'loginWithBiometricText': 'በባዮሜትሪክ ይግቡ',
   },
 };
-
-
   @override
   void initState() {
     super.initState();
@@ -125,42 +94,15 @@ class _HomePageState extends State<HomePage> {
       _fetchUserData();
     });
   }
-
   String getCurrentDate() {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('MMMM dd, yyyy');
     final String formatted = formatter.format(now);
     return formatted;
   }
-
-  // String _maskAccountNumber(String accountNumber) {
-  //   if (accountNumber.length <= 5) {
-  //     return accountNumber; // Do not mask if the account number is too short
-  //   }
-  //   int len = accountNumber.length;
-  //   return accountNumber.substring(0, len ~/ 2 - 2) +
-  //       '*' * 5 +
-  //       accountNumber.substring(len ~/ 2 + 3);
-  // }
-
-  // void _toggleVisibility() {
-  //   setState(() {
-  //     isAccountNumberVisible = !isAccountNumberVisible;
-  //     isBalanceVisible = !isBalanceVisible;
-  //   });
-  // }
-
-  // String _truncateAccountName(String accountName) {
-  //   return accountName
-  //       .split(' ')
-  //       .map((word) => word.length > 5 ? word.substring(0, 3) : word)
-  //       .join(' ');
-  // }
-
  Future<void> _fetchUserData() async {
   final globalState = Provider.of<GlobalState>(context, listen: false);
   globalState.setLoading(true);
-
   try {
     final response = await http.get(
       Uri.parse('https://node-api-g7fs.onrender.com/api/users/me'),
@@ -169,10 +111,8 @@ class _HomePageState extends State<HomePage> {
         'Content-Type': 'application/json',
       },
     );
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
       setState(() {
         username = data['userName'] ?? '';
         accountname = '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
@@ -189,13 +129,9 @@ class _HomePageState extends State<HomePage> {
     globalState.setLoading(false);
   }
 }
-
-
-
   void _logout(BuildContext context) {
     Navigator.of(context).pushReplacementNamed('/');
   }
-
   Future<void> _refreshPage() async {
     setState(() {
       _isLoading = true;
@@ -205,130 +141,6 @@ class _HomePageState extends State<HomePage> {
       _isLoading = false;
     });
   }
-
-// Toggle account number visibility
-//   void _toggleAccountNumberVisibility() {
-//     setState(() {
-//       isAccountNumberVisible = !isAccountNumberVisible;
-//     });
-//   }
-
-//   void _navigateToTransferPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => TransferPage(token: widget.token)),
-//     );
-//   }
-//     void _navigateToScheduleTransferPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => ScheduleTransferPage(token: widget.token)),
-//     );
-//   }
-//       void _navigateToLocalMoneyTransferPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => LocalMoneyTransferPage(token: widget.token)),
-//     );
-//   }
-//     void _navigateToTransferModulePage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => TransferModulePage(token: widget.token)),
-//     );
-//   }
-//       void _navigateToWalletTransferPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => WalletTransferPage(token: widget.token)),
-//     );
-//   }
-//      void _navigateToBillPaymentModulePage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => BillPaymentModulePage(token: widget.token)),
-//     );
-//   }
-//   void _navigateToOtherBankTransferPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => OtherBankTransferPage(token: widget.token)),
-//     );
-//   }
-//  void _navigateToInternationalTransferPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => InternationalTransferPage(token: widget.token)),
-//     );
-//   }
-
-//   void _navigateToBillPaymentPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => BillPaymentPage(token: widget.token)),
-//     );
-//   }
-//   void _navigateToAddRecipientPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => AddRecipientPage(token: widget.token)),
-//     );
-//   }
-//   void _navigateToManageBeneficiaryPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => ManageBeneficiaryPage(token: widget.token)),
-//     );
-//   }
-//     void _navigateToTransferToBeneficiaryPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => TransferToBeneficiaryPage(token: widget.token)),
-//     );
-//   }
-// void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountNumber) {
-//   Navigator.of(context).push(
-//     MaterialPageRoute(
-//       builder: (context) => SendMoneyToBeneficiaryPage(
-//         token: widget.token, 
-//         accountNumber: accountNumber,
-//       ),
-//     ),
-//   );
-// }
-//   void _navigateToAirLinePage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(
-//           builder: (context) => AirLinePage(token: widget.token)),
-//     );
-//   }
-
-//   void _navigateToTopUpPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(builder: (context) => TopUpPage(token: widget.token)),
-//     );
-//   }
-
-//   void _navigateToGovernmentServicePage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(builder: (context) => const GovernmentServicePage()),
-//     );
-//   }
-
-//   void _navigateToHelpPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(builder: (context) => const HelpPage()),
-//     );
-//   }
-
-//   void _navigateToEventPage(BuildContext context) {
-//     Navigator.of(context).push(
-//       MaterialPageRoute(builder: (context) => const EventPage()),
-//     );
-//   }
-
-
-
  void _navigateToRecentTransactionsPage(BuildContext context) {
   Navigator.of(context).push(
     MaterialPageRoute(
@@ -339,71 +151,49 @@ class _HomePageState extends State<HomePage> {
     ),
   );
 }
-
-
-  // void _navigateToAccountDisputePage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //         builder: (context) => AccountDisputePage(token: widget.token)),
-  //   );
-  // }
-
   void _navigateToExchangeRatePage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
           builder: (context) => ExchangeRatePage(token: widget.token)),
     );
   }
-
-  // void _navigateToKachaPage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(builder: (context) => KachaPage(token: widget.token)),
-  //   );
-  // }
-
-  // void _navigateToCbeBirPage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(builder: (context) => CbeBirPage(token: widget.token)),
-  //   );
-  // }
-
-  // void _navigateToEbirrPage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(builder: (context) => EbirrPage(token: widget.token)),
-  //   );
-  // }
-
-  // void _navigateToTellBirrPage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //         builder: (context) => TellBirrPage(token: widget.token)),
-  //   );
-  // }
-
-  // void _navigateToSupportPage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(builder: (context) => SupportPage(token: widget.token)),
-  //   );
-  // }
-
   void _navigateToMiniAppsPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => IssueReportPage(token: widget.token)),
     );
   }
-
+  //   void _navigateToAdminHomePage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(builder: (context) => AdminHomePage(token: widget.token)),
+  //   );
+  // }
   void _navigateToLoginWithPinPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const LoginPage()),
     );
   }
 
-  void _navigateToLoginWithBiometricPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const BiometricAuthPage()),
-    );
+    void _navigateToAdminPage(BuildContext context) {
+    if (role == 'Admin') {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => AdminHomePage(token: widget.token)),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Access Denied"),
+          content: const Text("You are not an Admin, so you can't access this page."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
   }
-
   @override
   Widget build(BuildContext context) {
     final globalState = Provider.of<GlobalState>(context);
@@ -468,321 +258,34 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(
-                  Icons.account_balance_outlined,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                title: const Text('Home'),
-                onTap: () {
-                  Navigator.of(context).pop(); // Close the drawer
-                },
-              ),
-              ExpansionTile(
-                leading: const Icon(
-                  Icons.payment,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                title: const Text('Network'), // Name the dropdown as 'MyBill'
-                trailing: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                onExpansionChanged: (bool expanded) {
-                  if (expanded) {
-
-                  }
-                },
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings, color: Color.fromARGB(255, 143, 4, 120)),
+              title: const Text('Admin Dashboard'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _navigateToAdminPage(context);
+              },
+            ),
+                             ListTile(
+                    leading: const Icon(Icons.edit,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Connectivity Issues'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToTransferPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('LAN & VLAN Issues'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToTransferToBeneficiaryPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Firewall & Security Issues'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToScheduleTransferPage(context);
-                    },
-                  ),
-                 ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('DNS & Routing Problems'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToLocalMoneyTransferPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('User & Device Specific Issues'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToOtherBankTransferPage(context);
-                    },
-                  ),
-                ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Hardware & Infrastructure'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToInternationalTransferPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.local_activity_outlined,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Network Performance Problems'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToRecentTransactionsPage(context);
-                    },
-                  ),
-                ],
-              ),
-
-               ExpansionTile(
-                leading: const Icon(
-                  Icons.payment,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                title: const Text('Computer'), // Name the dropdown as 'MyBill'
-                trailing: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                onExpansionChanged: (bool expanded) {
-                  if (expanded) {
-                  }
-                },
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Computer & Peripheral Hardware'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToAddRecipientPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('User Login & Access'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToManageBeneficiaryPage(context);
-                    },
-                  ),
-
-                    ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Operating System & Applications'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToManageBeneficiaryPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Display & Drivers'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToManageBeneficiaryPage(context);
-                    },
-                  ),
-
-                ],
-              ),
-
-              ExpansionTile(
-                leading: const Icon(
-                  Icons.payment,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                title: const Text('Software'), // Name the dropdown as 'MyBill'
-                trailing: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                onExpansionChanged: (bool expanded) {
-                  if (expanded) {
-                  }
-                },
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.payment,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                   title: const Text('Software Install & Licensing'),
+                   title: const Text('Edit Profile'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToBillPaymentPage(context);
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.payment,
+                                    ListTile(
+                     leading: const Icon(Icons.login,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: const Text('Peripheral Software Issues'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToTopUpPage(context);
-                    },
-                  ),    
-                  // ListTile(
-                  //   leading: const Icon(Icons.payment,
-                  //       color: Color.fromARGB(255, 143, 4, 120)),
-                  //   title: Text('AirLine'),
-                  //   onTap: () {
-                  //     Navigator.of(context).pop(); // Close the drawer
-                  //     _navigateToAirLinePage(context);
-                  //   },
-                  // ),       
-                ],
-              ),
-              ExpansionTile(
-                leading: const Icon(
-                  Icons.payment,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                title: const Text('ATM'), // Name the dropdown as 'MyBill'
-                trailing: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                onExpansionChanged: (bool expanded) {
-                  if (expanded) {
-// Handle any actions when the tile is expanded, if needed
-                  }
-                },
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4,
-                            120)), // Optional: use a different icon if you prefer
-                    title: const Text('Display & Input Devices'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToKachaPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4,
-                            120)), // Optional: use a different icon if you prefer
-                    title: const Text('Cash Dispensing & Handling'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToEbirrPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4,
-                            120)), // Optional: use a different icon if you prefer
-                    title: const Text('System & Application'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToCbeBirPage(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4,
-                            120)), // Optional: use a different icon if you prefer
-                    title: const Text('Security & Network'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToTellBirrPage(context);
-                    },
-                  ),
-                ListTile(
-                    leading: const Icon(Icons.transfer_within_a_station,
-                        color: Color.fromARGB(255, 143, 4,
-                            120)), // Optional: use a different icon if you prefer
-                    title: const Text('Transaction & Service Errors'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToTellBirrPage(context);
-                    },
-                  ),
-
-                ],
-              ),
-              ListTile(
-                leading: const Icon(Icons.currency_exchange,
-                    color: Color.fromARGB(255, 143, 4, 120)),
-                title: const Text('Printer'),
-                onTap: () {
-                  // Navigator.of(context).pop(); // Close the drawer
-                  // _navigateToExchangeRatePage(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.payment,
-                    color: Color.fromARGB(255, 143, 4, 120)),
-                title: const Text('Access'),
-                onTap: () {
-                  // Navigator.of(context).pop(); // Close the drawer
-                  // _navigateToSupportPage(context);
-                },
-              ),
-              ExpansionTile(
-                leading: const Icon(
-                  Icons.settings,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                title: Text(languageData[selectedLanguage]!['settingsText']!),
-                trailing: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Color.fromARGB(255, 143, 4, 120),
-                ),
-                onExpansionChanged: (bool expanded) {
-                  if (expanded) {
-// Handle any actions when the tile is expanded, if needed
-                  }
-                },
-                children: <Widget>[
-                  ListTile(
-                    title: Text(
-                        languageData[selectedLanguage]!['loginWithPinText']!),
+                     title: const Text('Change PIN'),
                     onTap: () {
                       Navigator.of(context).pop(); // Close the drawer
                       _navigateToLoginWithPinPage(context);
                     },
                   ),
-                  ListTile(
-                    title: Text(languageData[selectedLanguage]![
-                        'loginWithBiometricText']!),
-                    onTap: () {
-                      Navigator.of(context).pop(); // Close the drawer
-                      _navigateToLoginWithBiometricPage(context);
-                    },
-                  ),
-                ],
-              ),
               ListTile(
-                leading: const Icon(Icons.exit_to_app,
+                leading: const Icon(Icons.logout,
                     color: Color.fromARGB(255, 143, 4, 120)),
                 title: Text(languageData[selectedLanguage]!['logoutText']!),
                 onTap: () {
@@ -894,7 +397,6 @@ class _HomePageState extends State<HomePage> {
     ),
   ),
 ),
-
             ),
             const Spacer(),
             Row(
@@ -982,7 +484,6 @@ class _HomePageState extends State<HomePage> {
     ),
   ],
 ),
-
   const Spacer(),
   Row(
   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1045,8 +546,6 @@ class _HomePageState extends State<HomePage> {
     const Text('Software'),
   ],
 ),
-
-
     // Access
     Column(
       children: [
@@ -1078,7 +577,6 @@ class _HomePageState extends State<HomePage> {
     ),
   ],
 ),
-
             const Spacer(),
             CarouselSlider(
               options: CarouselOptions(
