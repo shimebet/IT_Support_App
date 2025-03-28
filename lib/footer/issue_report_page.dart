@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-
 
 class IssueReportPage extends StatefulWidget {
   final String token;
@@ -14,6 +14,8 @@ class IssueReportPage extends StatefulWidget {
   @override
   _IssueReportPageState createState() => _IssueReportPageState();
 }
+ bool _txtFileUploaded = false;
+bool _imageUploaded = false;
 
 class _IssueReportPageState extends State<IssueReportPage> {
   final _formKey = GlobalKey<FormState>();
@@ -45,17 +47,27 @@ class _IssueReportPageState extends State<IssueReportPage> {
   }
 
 Future<void> _pickImage() async {
+  if (_imageUploaded) {
+    setState(() {
+      _selectedImage = null;
+      _base64Image = null;
+      _imageUploaded = false;
+    });
+    return;
+  }
+
   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
   if (image != null) {
     final compressedBytes = await FlutterImageCompress.compressWithFile(
       image.path,
-      quality: 40, // Adjust quality (0 - 100) to reduce size
+      quality: 40,
     );
 
     if (compressedBytes != null) {
       setState(() {
-        _selectedImage = File(image.path); // Keep original path for display
+        _selectedImage = File(image.path);
         _base64Image = base64Encode(compressedBytes);
+        _imageUploaded = true;
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,6 +76,33 @@ Future<void> _pickImage() async {
     }
   }
 }
+
+
+Future<void> _pickTxtFile() async {
+  if (_txtFileUploaded) {
+    setState(() {
+      _txtFileUploaded = false;
+      _issueSolutionController.clear();
+    });
+    return;
+  }
+
+  final typeGroup = XTypeGroup(label: 'Text Files', extensions: ['txt']);
+  final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
+
+  if (file != null) {
+    final content = await file.readAsString();
+    setState(() {
+      _issueSolutionController.text = content;
+      _txtFileUploaded = true;
+    });
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('No file selected.')),
+    );
+  }
+}
+
 
   Future<void> _showConfirmationDialog() async {
     final confirmed = await showDialog<bool>(
@@ -194,23 +233,31 @@ Future<void> _pickImage() async {
                 decoration: const InputDecoration(labelText: 'Suggested Solution'),
                 maxLines: 3,
               ),
-              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: _pickTxtFile,
+                  icon: Icon(_txtFileUploaded ? Icons.delete : Icons.upload_file),
+                  label: Text(_txtFileUploaded ? 'Remove File' : 'Upload .txt File'),
+                ),
+              ),
 
-              // Image Upload Section
+              const SizedBox(height: 16),
               Row(
                 children: [
                   ElevatedButton.icon(
                     onPressed: _pickImage,
-                    icon: const Icon(Icons.image),
-                    label: const Text('Upload Image'),
+                    icon: Icon(_imageUploaded ? Icons.delete : Icons.image),
+                    label: Text(_imageUploaded ? 'Remove Image' : 'Upload Image'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 134, 23, 116),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  _selectedImage != null
-                      ? const Text("Image Selected")
-                      : const Text("No image selected"),
+                  Text(
+                    _imageUploaded ? "Image Selected" : "No image selected",
+                    style: const TextStyle(fontSize: 14),
+                  ),
                 ],
               ),
 
@@ -219,7 +266,6 @@ Future<void> _pickImage() async {
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Image.file(_selectedImage!, height: 150),
                 ),
-
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _onSubmitPressed,

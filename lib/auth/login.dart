@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // Import this package for JSON encoding and decoding
+import 'dart:convert';
 import '../home.dart';
 import '../account/open_new_account.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import '../global_state.dart';
-//import '../constants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,88 +18,69 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool rememberMe = false;
-  bool _isPasswordVisible = false; // Password is hidden by default
-  String selectedLanguage = 'English'; // Default selected language
-   bool _isButtonActive = false;
-
-  String concatenatedValue = "";
-
-  void _concatenatePhoneNumber() {
-    final phone = Provider.of<GlobalState>(context, listen: false).phone;
-    setState(() {
-      concatenatedValue = "Topup$phone";
-    });
-  }
-
-  Map<String, Map<String, String>> languageData = {
-    'English': {
-      'welcomeText': 'Hello, Welcome Back!',
-      'usernameHint': 'UserName',
-      'passwordHint': 'Password',
-      'rememberMeText': 'Remember Me',
-      'loginButtonText': 'Login',
-      'orSignInText': 'Sign in with',
-      'forgetPasswordText': 'Forget Password?',
-      'loginWithGoogleText': 'Login with Google',
-      'openNewAccountText': 'New User',
-      'biometricText': 'Biometric',
-      'locateUsText': 'Locate Us',
-      'enrollActivateText': 'New Event',
-      'supportText': 'Support',
-    },
-    'Oromo': {
-      'welcomeText': 'An Haa, Dhuffu!',
-      'usernameHint': 'Maqaa Sensaa',
-      'passwordHint': 'Icciti Kessan',
-      'rememberMeText': 'Siif ka agarsiisnu',
-      'loginButtonText': 'Login',
-      'orSignInText': 'Yoonkin Karraa',
-      'forgetPasswordText': 'Iccit Keessan Dagatan?',
-      'loginWithGoogleText': 'Google irran Senaa',
-      'openNewAccountText': 'Account Harawaa Banu',
-      'biometricText': 'Biometric',
-      'locateUsText': 'karaa Agarsisu',
-      'enrollActivateText': "New Event",
-      'supportText': 'Gargarsaa',
-    },
-    'Amharic': {
-      'welcomeText': 'ሰላም፣ እንኳን በደህና መጡ!',
-      'usernameHint': 'የተጠቃሚ ስም',
-      'passwordHint': 'የይለፍ ቃል',
-      'rememberMeText': 'አስታውሰኝ',
-      'loginButtonText': 'ግባ',
-      'orSignInText': 'ወደዚህ ይግቡ',
-      'forgetPasswordText': 'የይለፍ ቃል ረሳሁን?',
-      'loginWithGoogleText': 'Google እንዴት ግባ',
-      'openNewAccountText': 'አዲስ መለያ ክፍት ',
-      'biometricText': 'ቢዝሚል',
-      'locateUsText': 'ያግኙን',
-      'enrollActivateText': 'New Event',
-      'supportText': 'ድጋፍ'
-    },
-    // Add more languages here
-  };
-
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isButtonActive = false;
+  bool _isLoading = true;
   bool showInvalidCredentials = false;
+  bool isNetworkError = false;
   bool usernameError = false;
   bool passwordError = false;
-  bool _isLoading = true; // Define the loading state
+
+  String selectedLanguage = 'English';
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  Map<String, Map<String, String>> languageData = {
+  'English': {
+    'welcomeText': 'Hello, Welcome Back!',
+    'usernameHint': 'UserName',
+    'passwordHint': 'Password',
+    'rememberMeText': 'Remember Me',
+    'loginButtonText': 'Login',
+    'forgetPasswordText': 'Forget Password?',
+    'openNewAccountText': 'New User',
+    'locateUsText': 'Locate Us',
+    'enrollActivateText': 'New Event',
+    'supportText': 'Support',
+  },
+  'Amharic': {
+    'welcomeText': 'ሰላም፣ እንዳን በደለና መጣስ!',
+    'usernameHint': 'የተጠቃሚ ስም',
+    'passwordHint': 'የይለፍ ቃል',
+    'rememberMeText': 'አስታውሰኝ',
+    'loginButtonText': 'ግባ',
+    'forgetPasswordText': 'የይለፍ ቃል ረሳሑን?',
+    'openNewAccountText': 'አዲስ መለያ ክፍት',
+    'locateUsText': 'ያግኑን',
+    'enrollActivateText': 'New Event',
+    'supportText': 'ድጋፍ'
+  },
+  'Oromic': {
+    'welcomeText': 'Akkam, Baga Nagaan Dhuftan!',
+    'usernameHint': 'Maqaa Ittiin Seentan',
+    'passwordHint': 'Jecha Ceʼumsaa',
+    'rememberMeText': 'Na Yaadadhu',
+    'loginButtonText': 'Seeni',
+    'forgetPasswordText': 'Jecha Ceʼumsaa Dagatte?',
+    'openNewAccountText': 'Fayyadamaa Haaraa',
+    'locateUsText': 'Nu Argadhu',
+    'enrollActivateText': 'Waliigalte Haaraa',
+    'supportText': 'Deggersa',
+  },
+};
 
   @override
   void initState() {
     super.initState();
-    _concatenatePhoneNumber();
     _loadRememberedUsername();
-    _simulateLoading(); // Simulate loading delay
+    _simulateLoading();
   }
 
   Future<void> _simulateLoading() async {
-    await Future.delayed(const Duration(seconds: 1)); // Simulate a delay
+    await Future.delayed(const Duration(seconds: 1));
     if (mounted) {
       setState(() {
-        _isLoading = false; // Set loading to false after delay
+        _isLoading = false;
       });
     }
   }
@@ -125,92 +105,97 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> login() async {
-  String enteredUsername = usernameController.text.trim();
-  String enteredPassword = passwordController.text.trim();
-
-  // Check if entered credentials are not empty
-  if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
-    setState(() {
-      usernameError = enteredUsername.isEmpty;
-      passwordError = enteredPassword.isEmpty;
-      showInvalidCredentials = false;
-    });
-    return;
-  }
-
-  setState(() {
-    _isLoading = true;
-  });
-
-  final url = Uri.parse('https://node-api-g7fs.onrender.com/api/users/login');
-  final headers = {
-    'Content-Type': 'application/json',
-  };
-  final body = json.encode({
-    'userName': enteredUsername,
-    'password': enteredPassword,
-  });
-
-  try {
-    final response = await http.post(url, headers: headers, body: body);
-
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-
-      final String token = responseData['token'];
-      final String email = responseData['email'];
-      final String userId = responseData['_id'];
-
-      // Update global state with login info
-      final globalState = Provider.of<GlobalState>(context, listen: false);
-      globalState.setUsername(enteredUsername);
-      globalState.setEmail(email);
-      globalState.setUserId(userId);
-      globalState.setToken(token);
-
-      // Save username if rememberMe is enabled
-      _saveUsername();
-
-      // Navigate to home page
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(token: token)),
-      );
-
-      setState(() {
-        showInvalidCredentials = false;
-        usernameError = false;
-        passwordError = false;
-      });
-    } else {
-      setState(() {
-        showInvalidCredentials = true;
-        usernameError = false;
-        passwordError = false;
-      });
-    }
-  } catch (error) {
-    print('Error during login: $error');
-    setState(() {
-      showInvalidCredentials = true;
-      usernameError = false;
-      passwordError = false;
-    });
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-}
-
-
-
-    void _checkFormValidity() {
+  void _checkFormValidity() {
     setState(() {
       _isButtonActive = usernameController.text.isNotEmpty &&
           passwordController.text.isNotEmpty;
     });
+  }
+
+  Future<void> login() async {
+    String enteredUsername = usernameController.text.trim();
+    String enteredPassword = passwordController.text.trim();
+
+    if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
+      setState(() {
+        usernameError = enteredUsername.isEmpty;
+        passwordError = enteredPassword.isEmpty;
+        showInvalidCredentials = false;
+        isNetworkError = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      usernameError = false;
+      passwordError = false;
+      showInvalidCredentials = false;
+      isNetworkError = false;
+    });
+
+    final url = Uri.parse('https://node-api-g7fs.onrender.com/api/users/login');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'username': enteredUsername,
+      'password': enteredPassword,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        final String token = responseData['token'] ?? '';
+        final String email = responseData['email'] ?? '';
+        final String username = responseData['username'] ?? enteredUsername;
+        final String userId = responseData['_id'];
+
+        final globalState = Provider.of<GlobalState>(context, listen: false);
+        globalState.setUsername(username);
+        globalState.setEmail(email);
+        globalState.setUserId(userId);
+        globalState.setToken(token);
+
+        _saveUsername();
+
+        setState(() {
+          showInvalidCredentials = false;
+          isNetworkError = false;
+        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(token: token, username: username),
+          ),
+        );
+      } else if (response.statusCode == 401) {
+        setState(() {
+          showInvalidCredentials = true;
+          isNetworkError = false;
+        });
+      } else {
+        setState(() {
+          showInvalidCredentials = false;
+          isNetworkError = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Server error: ${response.statusCode}')),
+        );
+      }
+    } catch (error) {
+      setState(() {
+        showInvalidCredentials = false;
+        isNetworkError = true;
+      });
+      print('Login error: $error');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -263,8 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Text(value),
                             ),
                           );
@@ -273,17 +257,18 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  if (showInvalidCredentials)
-                    const Text(
-                      'Invalid Credentials',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                  if (showInvalidCredentials || isNetworkError)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        isNetworkError
+                            ? 'Network error. Please check your connection.'
+                            : 'Invalid username or password.',
+                        style: const TextStyle(color: Colors.red, fontSize: 14),
                       ),
                     ),
                   SizedBox(
-                    width: 300, // Adjust the width as needed
+                    width: 300,
                     child: Column(
                       children: [
                         TextField(
@@ -292,7 +277,7 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               usernameError = false;
                             });
-                             _checkFormValidity();
+                            _checkFormValidity();
                           },
                           decoration: InputDecoration(
                             hintText:
@@ -314,7 +299,7 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               passwordError = false;
                             });
-                             _checkFormValidity();
+                            _checkFormValidity();
                           },
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
@@ -349,22 +334,22 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-              SizedBox(
-                width: 250,
-                child: ElevatedButton(
-                  onPressed: _isButtonActive ? login : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isButtonActive
-                        ? Color.fromARGB(255, 182, 4, 143)
-                        : Color.fromARGB(255, 230, 226, 229),
-                    foregroundColor: _isButtonActive
-                        ? Colors.white
-                        : const Color.fromARGB(255, 70, 3, 31),
-                  ),
-                  child: Text(
-                      languageData[selectedLanguage]!['loginButtonText']!),
-                ),
-              ),
+                      SizedBox(
+                        width: 250,
+                        child: ElevatedButton(
+                          onPressed: _isButtonActive ? login : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isButtonActive
+                                ? const Color.fromARGB(255, 182, 4, 143)
+                                : const Color.fromARGB(255, 230, 226, 229),
+                            foregroundColor: _isButtonActive
+                                ? Colors.white
+                                : const Color.fromARGB(255, 70, 3, 31),
+                          ),
+                          child: Text(
+                              languageData[selectedLanguage]!['loginButtonText']!),
+                        ),
+                      ),
                     ],
                   ),
                   Row(
@@ -394,13 +379,11 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextButton.styleFrom(
                           foregroundColor: const Color.fromARGB(246, 65, 2, 41),
                         ),
-                        child: Text(languageData[selectedLanguage]![
-                            'forgetPasswordText']!),
+                        child: Text(languageData[selectedLanguage]!['forgetPasswordText']!),
                       ),
                     ],
                   ),
                   const SizedBox(height: 50),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -409,39 +392,19 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const OpenNewAccountPage()),
+                                builder: (context) => const OpenNewAccountPage()),
                           );
                         },
                         child: Text(
-                          languageData[selectedLanguage]![
-                              'openNewAccountText']!,
+                          languageData[selectedLanguage]!['openNewAccountText']!,
                           style: const TextStyle(
                             color: Color.fromARGB(253, 99, 1, 61),
                             fontSize: 16,
                           ),
                         ),
                       ),
-                      // Spacer(),
-                      // TextButton(
-                      //   onPressed: () {
-                      //     Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) => BiometricAuthPage()),
-                      //     );
-                      //   },
-                      //   child: Text(
-                      //     languageData[selectedLanguage]!['biometricText']!,
-                      //     style: TextStyle(
-                      //       color: Color.fromARGB(253, 99, 1, 61),
-                      //       fontSize: 16,
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
-                  // Spacer(),
                   CarouselSlider(
                     options: CarouselOptions(
                       height: 180.0,
@@ -450,8 +413,7 @@ class _LoginPageState extends State<LoginPage> {
                       aspectRatio: 2.0,
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enableInfiniteScroll: true,
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
+                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
                       viewportFraction: 1.1,
                     ),
                     items: [
@@ -468,23 +430,19 @@ class _LoginPageState extends State<LoginPage> {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
-                            width: double
-                                .infinity, // specify the width to be full screen width
-                            height: 150, // specify the height
+                            width: double.infinity,
+                            height: 150,
                             margin: const EdgeInsets.symmetric(horizontal: 0.0),
                             decoration: BoxDecoration(
                               color: const Color.fromARGB(255, 219, 6, 155),
                               border: Border.all(
-                                color: const Color.fromARGB(
-                                    255, 250, 251, 252), // border color
-                                width: 0.5, // border width
+                                color: const Color.fromARGB(255, 250, 251, 252),
+                                width: 0.5,
                               ),
-                              borderRadius:
-                                  BorderRadius.circular(10), // border radius
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  10), // image border radius
+                              borderRadius: BorderRadius.circular(10),
                               child: Image.asset(i, fit: BoxFit.cover),
                             ),
                           );
@@ -492,7 +450,6 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }).toList(),
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -510,8 +467,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextButton(
                         onPressed: () {},
                         child: Text(
-                          languageData[selectedLanguage]![
-                              'enrollActivateText']!,
+                          languageData[selectedLanguage]!['enrollActivateText']!,
                           style: const TextStyle(
                             color: Color.fromARGB(246, 65, 2, 41),
                             fontSize: 12,

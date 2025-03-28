@@ -9,7 +9,7 @@ import '../constants.dart';
 
 class TellBirrPage extends StatefulWidget {
   final String token;
-  const TellBirrPage({Key? key, required this.token}) : super(key: key);
+  const TellBirrPage({super.key, required this.token});
 
   @override
   _TellBirrPageState createState() => _TellBirrPageState();
@@ -120,7 +120,7 @@ class _TellBirrPageState extends State<TellBirrPage> {
     final headers = _buildHeaders();
 
     String formatDateTime(DateTime dateTime) {
-      return dateTime.toUtc().toIso8601String().split('.').first + 'Z';
+      return '${dateTime.toUtc().toIso8601String().split('.').first}Z';
     }
 
     final now = DateTime.now();
@@ -185,14 +185,14 @@ class _TellBirrPageState extends State<TellBirrPage> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Transfer Failed'),
+            title: const Text('Transfer Failed'),
             content: Text(errorMessage),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           ),
@@ -204,14 +204,14 @@ class _TellBirrPageState extends State<TellBirrPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Transfer Failed'),
+          title: const Text('Transfer Failed'),
           content: Text('An error occurred: $e'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -363,12 +363,12 @@ class _TellBirrPageState extends State<TellBirrPage> {
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: const Text('Continue'),
@@ -445,7 +445,7 @@ class ConfirmationPage extends StatelessWidget {
   final VoidCallback onSubmit;
 
   const ConfirmationPage({
-    Key? key,
+    super.key,
     required this.fromAccount,
     required this.phoneNumber,
     required this.beneficiaryName,
@@ -453,7 +453,7 @@ class ConfirmationPage extends StatelessWidget {
     required this.note,
     required this.transactionDate,
     required this.onSubmit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -519,14 +519,14 @@ class SuccessPage extends StatelessWidget {
   final DateTime transactionDate;
 
   const SuccessPage({
-    Key? key,
+    super.key,
     required this.fromAccount,
     required this.phoneNumber,
     required this.beneficiaryName,
     required this.amount,
     required this.note,
     required this.transactionDate,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

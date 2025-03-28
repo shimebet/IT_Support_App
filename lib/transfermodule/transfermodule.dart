@@ -76,7 +76,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('Connectivity Issues'),
+            title: const Text('Connectivity Issues'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToTransferPage(context);
@@ -85,7 +85,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('LAN & VLAN Issues'),
+            title: const Text('LAN & VLAN Issues'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToTransferToBeneficiaryPage(context);
@@ -94,7 +94,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('Firewall & Security Issues'),
+            title: const Text('Firewall & Security Issues'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToScheduleTransferPage(context);
@@ -103,7 +103,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('DNS & Routing Problems'),
+            title: const Text('DNS & Routing Problems'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToOtherBankTransferPage(context);
@@ -112,7 +112,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('User & Device Specific Issues'),
+            title: const Text('User & Device Specific Issues'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToInternationalTransferPage(context);
@@ -122,7 +122,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('Hardware & Infrastructure'),
+            title: const Text('Hardware & Infrastructure'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToInternationalTransferPage(context);
@@ -131,7 +131,7 @@ class _TransferModulePageState extends State<TransferModulePage> {
           ListTile(
             leading: const Icon(Icons.transfer_within_a_station,
                 color: Color.fromARGB(255, 143, 4, 120)),
-            title: Text('Network Performance Problems'),
+            title: const Text('Network Performance Problems'),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               _navigateToInternationalTransferPage(context);

@@ -22,7 +22,7 @@ class _KachaPageState extends State<KachaPage> {
   final TextEditingController _noteController = TextEditingController();
   String? _selectedFromAccount;
   List<Map<String, dynamic>> _accounts = [];
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _KachaPageState extends State<KachaPage> {
   Future<void> _performKachaTransaction() async {
     final url = Uri.parse(ApiConstants.performKachaTransaction);
     final headers = _buildHeaders();
-    final trnumber = 'FT23TRS' + _generateRandomString(1, 9);
+    final trnumber = 'FT23TRS${_generateRandomString(1, 9)}';
     final body = jsonEncode({
       "trnumber": trnumber,
       "current_serviceID": "Query",
@@ -137,7 +137,7 @@ class _KachaPageState extends State<KachaPage> {
   final account = kachaData['NS1:QueryResponse']['account'] ?? '';
   final formattedBeneficiaryName = account.replaceAll('251', '');
   final now = DateTime.now();
-  final formattedNow = now.toUtc().toIso8601String().split('.').first + 'Z';
+  final formattedNow = '${now.toUtc().toIso8601String().split('.').first}Z';
 
   final body = jsonEncode({
     "amount": _amountController.text,
@@ -297,13 +297,13 @@ class _KachaPageState extends State<KachaPage> {
                         _performKachaTransaction();
                       },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
+                  backgroundColor: WidgetStateProperty.all<Color>(
                       const Color.fromARGB(255, 185, 3, 155)),
                   foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
-                  padding: MaterialStateProperty.all<EdgeInsets>(
+                      WidgetStateProperty.all<Color>(Colors.white),
+                  padding: WidgetStateProperty.all<EdgeInsets>(
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-                  textStyle: MaterialStateProperty.all<TextStyle>(
+                  textStyle: WidgetStateProperty.all<TextStyle>(
                       const TextStyle(fontSize: 16)),
                 ),
                 child: _isLoading

@@ -1,55 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
-import 'transfermodule/transfer.dart';
-import 'bill/topup.dart';
-import 'bill/billpayment.dart';
-import 'bill/airline.dart';
-import 'body/govermment.dart';
+// import 'transfermodule/transfer.dart';
+// import 'bill/topup.dart';
+// import 'bill/billpayment.dart';
+// import 'bill/airline.dart';
+// import 'body/govermment.dart';
 import 'footer/it_support_solution.dart';
 import 'footer/issue_report_page.dart';
-import 'body/help.dart';
-import 'body/support.dart';
+// import 'body/help.dart';
+// import 'body/support.dart';
 import 'body/exchangerate.dart';
 import 'auth/biometric_auth.dart';
 import 'auth/login.dart';
-import 'body/event.dart';
-import 'beneficiary/add_beneficiary.dart';
-import 'beneficiary/manage_beneficiary.dart';
-import 'beneficiary/transfer_to_beneficiary.dart';
-import 'beneficiary/send_money_tobeneficiary.dart';
-import 'transfermodule/transfermodule.dart';
-import 'wallet/wallettransfermodule.dart';
-import 'wallet/kacha.dart';
-import 'wallet/ebirr.dart';
-import 'wallet/cbebirr.dart';
-import 'wallet/tellbirr.dart';
-import 'transfermodule/transfer_to_other_bank_page.dart';
-import 'transfermodule/international_transfer_page.dart';
-import 'transfermodule/localmoneytransfer.dart';
-import 'bill/billpaymentmodule.dart';
+// import 'body/event.dart';
+// import 'beneficiary/add_beneficiary.dart';
+// import 'beneficiary/manage_beneficiary.dart';
+// import 'beneficiary/transfer_to_beneficiary.dart';
+// import 'beneficiary/send_money_tobeneficiary.dart';
+// import 'transfermodule/transfermodule.dart';
+// import 'wallet/wallettransfermodule.dart';
+// import 'wallet/kacha.dart';
+// import 'wallet/ebirr.dart';
+// import 'wallet/cbebirr.dart';
+// import 'wallet/tellbirr.dart';
+// import 'transfermodule/transfer_to_other_bank_page.dart';
+// import 'transfermodule/international_transfer_page.dart';
+// import 'transfermodule/localmoneytransfer.dart';
+// import 'bill/billpaymentmodule.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../global_state.dart';
-import '../constants.dart';
-import 'transfermodule/account.dart';
-import 'transfermodule/scheduletransfer.dart';
+// import '../constants.dart';
+// import 'transfermodule/account.dart';
+// import 'transfermodule/scheduletransfer.dart';
 
 class HomePage extends StatefulWidget {
   final String token;
+  final String username; // Add this
 
-  const HomePage({super.key, required this.token});
+   const HomePage({
+    super.key,
+    required this.token,
+    required this.username, // Add this
+  });
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
   late String username = "";
   late String accountname = "";
   late String email = "";
-  late String branchName = "";
+  late String role = "";
   late String branchAddress = "";
   late String branchGrade = "";
   late String branchId = "";
@@ -127,29 +133,29 @@ class _HomePageState extends State<HomePage> {
     return formatted;
   }
 
-  String _maskAccountNumber(String accountNumber) {
-    if (accountNumber.length <= 5) {
-      return accountNumber; // Do not mask if the account number is too short
-    }
-    int len = accountNumber.length;
-    return accountNumber.substring(0, len ~/ 2 - 2) +
-        '*' * 5 +
-        accountNumber.substring(len ~/ 2 + 3);
-  }
+  // String _maskAccountNumber(String accountNumber) {
+  //   if (accountNumber.length <= 5) {
+  //     return accountNumber; // Do not mask if the account number is too short
+  //   }
+  //   int len = accountNumber.length;
+  //   return accountNumber.substring(0, len ~/ 2 - 2) +
+  //       '*' * 5 +
+  //       accountNumber.substring(len ~/ 2 + 3);
+  // }
 
-  void _toggleVisibility() {
-    setState(() {
-      isAccountNumberVisible = !isAccountNumberVisible;
-      isBalanceVisible = !isBalanceVisible;
-    });
-  }
+  // void _toggleVisibility() {
+  //   setState(() {
+  //     isAccountNumberVisible = !isAccountNumberVisible;
+  //     isBalanceVisible = !isBalanceVisible;
+  //   });
+  // }
 
-  String _truncateAccountName(String accountName) {
-    return accountName
-        .split(' ')
-        .map((word) => word.length > 5 ? word.substring(0, 3) : word)
-        .join(' ');
-  }
+  // String _truncateAccountName(String accountName) {
+  //   return accountName
+  //       .split(' ')
+  //       .map((word) => word.length > 5 ? word.substring(0, 3) : word)
+  //       .join(' ');
+  // }
 
  Future<void> _fetchUserData() async {
   final globalState = Provider.of<GlobalState>(context, listen: false);
@@ -170,7 +176,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         username = data['userName'] ?? '';
         accountname = '${data['firstName'] ?? ''} ${data['lastName'] ?? ''}';
-        branchName = data['branchName'] ?? '';
+        role = data['role'] ?? '';
         branchAddress = data['branchAddress'] ?? '';
         branchGrade = data['branchGrade'] ?? '';
       });
@@ -201,141 +207,146 @@ class _HomePageState extends State<HomePage> {
   }
 
 // Toggle account number visibility
-  void _toggleAccountNumberVisibility() {
-    setState(() {
-      isAccountNumberVisible = !isAccountNumberVisible;
-    });
-  }
+//   void _toggleAccountNumberVisibility() {
+//     setState(() {
+//       isAccountNumberVisible = !isAccountNumberVisible;
+//     });
+//   }
 
-  void _navigateToTransferPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => TransferPage(token: widget.token)),
-    );
-  }
-    void _navigateToScheduleTransferPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => ScheduleTransferPage(token: widget.token)),
-    );
-  }
-      void _navigateToLocalMoneyTransferPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => LocalMoneyTransferPage(token: widget.token)),
-    );
-  }
-    void _navigateToTransferModulePage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => TransferModulePage(token: widget.token)),
-    );
-  }
-      void _navigateToWalletTransferPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => WalletTransferPage(token: widget.token)),
-    );
-  }
-     void _navigateToBillPaymentModulePage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => BillPaymentModulePage(token: widget.token)),
-    );
-  }
-  void _navigateToOtherBankTransferPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => OtherBankTransferPage(token: widget.token)),
-    );
-  }
- void _navigateToInternationalTransferPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => InternationalTransferPage(token: widget.token)),
-    );
-  }
+//   void _navigateToTransferPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => TransferPage(token: widget.token)),
+//     );
+//   }
+//     void _navigateToScheduleTransferPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => ScheduleTransferPage(token: widget.token)),
+//     );
+//   }
+//       void _navigateToLocalMoneyTransferPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => LocalMoneyTransferPage(token: widget.token)),
+//     );
+//   }
+//     void _navigateToTransferModulePage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => TransferModulePage(token: widget.token)),
+//     );
+//   }
+//       void _navigateToWalletTransferPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => WalletTransferPage(token: widget.token)),
+//     );
+//   }
+//      void _navigateToBillPaymentModulePage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => BillPaymentModulePage(token: widget.token)),
+//     );
+//   }
+//   void _navigateToOtherBankTransferPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => OtherBankTransferPage(token: widget.token)),
+//     );
+//   }
+//  void _navigateToInternationalTransferPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => InternationalTransferPage(token: widget.token)),
+//     );
+//   }
 
-  void _navigateToBillPaymentPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => BillPaymentPage(token: widget.token)),
-    );
-  }
-  void _navigateToAddRecipientPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => AddRecipientPage(token: widget.token)),
-    );
-  }
-  void _navigateToManageBeneficiaryPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => ManageBeneficiaryPage(token: widget.token)),
-    );
-  }
-    void _navigateToTransferToBeneficiaryPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => TransferToBeneficiaryPage(token: widget.token)),
-    );
-  }
-void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountNumber) {
+//   void _navigateToBillPaymentPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => BillPaymentPage(token: widget.token)),
+//     );
+//   }
+//   void _navigateToAddRecipientPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => AddRecipientPage(token: widget.token)),
+//     );
+//   }
+//   void _navigateToManageBeneficiaryPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => ManageBeneficiaryPage(token: widget.token)),
+//     );
+//   }
+//     void _navigateToTransferToBeneficiaryPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => TransferToBeneficiaryPage(token: widget.token)),
+//     );
+//   }
+// void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountNumber) {
+//   Navigator.of(context).push(
+//     MaterialPageRoute(
+//       builder: (context) => SendMoneyToBeneficiaryPage(
+//         token: widget.token, 
+//         accountNumber: accountNumber,
+//       ),
+//     ),
+//   );
+// }
+//   void _navigateToAirLinePage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//           builder: (context) => AirLinePage(token: widget.token)),
+//     );
+//   }
+
+//   void _navigateToTopUpPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(builder: (context) => TopUpPage(token: widget.token)),
+//     );
+//   }
+
+//   void _navigateToGovernmentServicePage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(builder: (context) => const GovernmentServicePage()),
+//     );
+//   }
+
+//   void _navigateToHelpPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(builder: (context) => const HelpPage()),
+//     );
+//   }
+
+//   void _navigateToEventPage(BuildContext context) {
+//     Navigator.of(context).push(
+//       MaterialPageRoute(builder: (context) => const EventPage()),
+//     );
+//   }
+
+
+
+ void _navigateToRecentTransactionsPage(BuildContext context) {
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (context) => SendMoneyToBeneficiaryPage(
-        token: widget.token, 
-        accountNumber: accountNumber,
+      builder: (context) => SupportIssuesPage(
+        token: widget.token,
+        username: widget.username, // <-- Pass the username here
       ),
     ),
   );
 }
-  void _navigateToAirLinePage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => AirLinePage(token: widget.token)),
-    );
-  }
-
-  void _navigateToTopUpPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => TopUpPage(token: widget.token)),
-    );
-  }
-
-  void _navigateToGovernmentServicePage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const GovernmentServicePage()),
-    );
-  }
-
-  void _navigateToHelpPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const HelpPage()),
-    );
-  }
-
-  void _navigateToEventPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const EventPage()),
-    );
-  }
 
 
-
-  void _navigateToRecentTransactionsPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => SupportIssuesPage(token: widget.token)),
-    );
-  }
-
-  void _navigateToAccountDisputePage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => AccountDisputePage(token: widget.token)),
-    );
-  }
+  // void _navigateToAccountDisputePage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //         builder: (context) => AccountDisputePage(token: widget.token)),
+  //   );
+  // }
 
   void _navigateToExchangeRatePage(BuildContext context) {
     Navigator.of(context).push(
@@ -344,36 +355,36 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
     );
   }
 
-  void _navigateToKachaPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => KachaPage(token: widget.token)),
-    );
-  }
+  // void _navigateToKachaPage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(builder: (context) => KachaPage(token: widget.token)),
+  //   );
+  // }
 
-  void _navigateToCbeBirPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => CbeBirPage(token: widget.token)),
-    );
-  }
+  // void _navigateToCbeBirPage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(builder: (context) => CbeBirPage(token: widget.token)),
+  //   );
+  // }
 
-  void _navigateToEbirrPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => EbirrPage(token: widget.token)),
-    );
-  }
+  // void _navigateToEbirrPage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(builder: (context) => EbirrPage(token: widget.token)),
+  //   );
+  // }
 
-  void _navigateToTellBirrPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-          builder: (context) => TellBirrPage(token: widget.token)),
-    );
-  }
+  // void _navigateToTellBirrPage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //         builder: (context) => TellBirrPage(token: widget.token)),
+  //   );
+  // }
 
-  void _navigateToSupportPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => SupportPage(token: widget.token)),
-    );
-  }
+  // void _navigateToSupportPage(BuildContext context) {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(builder: (context) => SupportPage(token: widget.token)),
+  //   );
+  // }
 
   void _navigateToMiniAppsPage(BuildContext context) {
     Navigator.of(context).push(
@@ -472,7 +483,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   Icons.payment,
                   color: Color.fromARGB(255, 143, 4, 120),
                 ),
-                title: Text('Network'), // Name the dropdown as 'MyBill'
+                title: const Text('Network'), // Name the dropdown as 'MyBill'
                 trailing: const Icon(
                   Icons.arrow_drop_down,
                   color: Color.fromARGB(255, 143, 4, 120),
@@ -486,7 +497,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Connectivity Issues'),
+                    title: const Text('Connectivity Issues'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToTransferPage(context);
@@ -495,7 +506,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('LAN & VLAN Issues'),
+                    title: const Text('LAN & VLAN Issues'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToTransferToBeneficiaryPage(context);
@@ -504,7 +515,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Firewall & Security Issues'),
+                    title: const Text('Firewall & Security Issues'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToScheduleTransferPage(context);
@@ -513,7 +524,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                  ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('DNS & Routing Problems'),
+                    title: const Text('DNS & Routing Problems'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToLocalMoneyTransferPage(context);
@@ -522,7 +533,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('User & Device Specific Issues'),
+                    title: const Text('User & Device Specific Issues'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToOtherBankTransferPage(context);
@@ -531,7 +542,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                 ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Hardware & Infrastructure'),
+                    title: const Text('Hardware & Infrastructure'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToInternationalTransferPage(context);
@@ -540,7 +551,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.local_activity_outlined,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Network Performance Problems'),
+                    title: const Text('Network Performance Problems'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToRecentTransactionsPage(context);
@@ -554,7 +565,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   Icons.payment,
                   color: Color.fromARGB(255, 143, 4, 120),
                 ),
-                title: Text('Computer'), // Name the dropdown as 'MyBill'
+                title: const Text('Computer'), // Name the dropdown as 'MyBill'
                 trailing: const Icon(
                   Icons.arrow_drop_down,
                   color: Color.fromARGB(255, 143, 4, 120),
@@ -567,7 +578,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Computer & Peripheral Hardware'),
+                    title: const Text('Computer & Peripheral Hardware'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToAddRecipientPage(context);
@@ -576,7 +587,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('User Login & Access'),
+                    title: const Text('User Login & Access'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToManageBeneficiaryPage(context);
@@ -586,7 +597,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                     ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Operating System & Applications'),
+                    title: const Text('Operating System & Applications'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToManageBeneficiaryPage(context);
@@ -595,7 +606,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Display & Drivers'),
+                    title: const Text('Display & Drivers'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToManageBeneficiaryPage(context);
@@ -610,7 +621,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   Icons.payment,
                   color: Color.fromARGB(255, 143, 4, 120),
                 ),
-                title: Text('Software'), // Name the dropdown as 'MyBill'
+                title: const Text('Software'), // Name the dropdown as 'MyBill'
                 trailing: const Icon(
                   Icons.arrow_drop_down,
                   color: Color.fromARGB(255, 143, 4, 120),
@@ -623,7 +634,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.payment,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                   title: Text('Software Install & Licensing'),
+                   title: const Text('Software Install & Licensing'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToBillPaymentPage(context);
@@ -632,7 +643,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   ListTile(
                     leading: const Icon(Icons.payment,
                         color: Color.fromARGB(255, 143, 4, 120)),
-                    title: Text('Peripheral Software Issues'),
+                    title: const Text('Peripheral Software Issues'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToTopUpPage(context);
@@ -654,7 +665,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                   Icons.payment,
                   color: Color.fromARGB(255, 143, 4, 120),
                 ),
-                title: Text('ATM'), // Name the dropdown as 'MyBill'
+                title: const Text('ATM'), // Name the dropdown as 'MyBill'
                 trailing: const Icon(
                   Icons.arrow_drop_down,
                   color: Color.fromARGB(255, 143, 4, 120),
@@ -669,7 +680,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4,
                             120)), // Optional: use a different icon if you prefer
-                    title: Text('Display & Input Devices'),
+                    title: const Text('Display & Input Devices'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToKachaPage(context);
@@ -679,7 +690,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4,
                             120)), // Optional: use a different icon if you prefer
-                    title: Text('Cash Dispensing & Handling'),
+                    title: const Text('Cash Dispensing & Handling'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToEbirrPage(context);
@@ -689,7 +700,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4,
                             120)), // Optional: use a different icon if you prefer
-                    title: Text('System & Application'),
+                    title: const Text('System & Application'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToCbeBirPage(context);
@@ -699,7 +710,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4,
                             120)), // Optional: use a different icon if you prefer
-                    title: Text('Security & Network'),
+                    title: const Text('Security & Network'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToTellBirrPage(context);
@@ -709,7 +720,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                     leading: const Icon(Icons.transfer_within_a_station,
                         color: Color.fromARGB(255, 143, 4,
                             120)), // Optional: use a different icon if you prefer
-                    title: Text('Transaction & Service Errors'),
+                    title: const Text('Transaction & Service Errors'),
                     onTap: () {
                       // Navigator.of(context).pop(); // Close the drawer
                       // _navigateToTellBirrPage(context);
@@ -721,7 +732,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
               ListTile(
                 leading: const Icon(Icons.currency_exchange,
                     color: Color.fromARGB(255, 143, 4, 120)),
-                title: Text('Printer'),
+                title: const Text('Printer'),
                 onTap: () {
                   // Navigator.of(context).pop(); // Close the drawer
                   // _navigateToExchangeRatePage(context);
@@ -730,7 +741,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
               ListTile(
                 leading: const Icon(Icons.payment,
                     color: Color.fromARGB(255, 143, 4, 120)),
-                title: Text('Access'),
+                title: const Text('Access'),
                 onTap: () {
                   // Navigator.of(context).pop(); // Close the drawer
                   // _navigateToSupportPage(context);
@@ -791,7 +802,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
             Container(
               padding: const EdgeInsets.only(right: 12.0, left: 6.0),
               child: globalState.isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : Card(
   elevation: 3,
   shape: RoundedRectangleBorder(
@@ -832,12 +843,12 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
             ),
           ),
 
-          // Branch Info Row
+          // Role
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Branch: $branchName',
+                'Role: $role',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
@@ -1047,7 +1058,7 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Color.fromRGBO(26, 1, 250, 1),
+              color: const Color.fromRGBO(26, 1, 250, 1),
               width: 2,
             ),
           ),

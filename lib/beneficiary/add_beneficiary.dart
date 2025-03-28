@@ -8,7 +8,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 class AddRecipientPage extends StatefulWidget {
   final String token;
 
-  const AddRecipientPage({Key? key, required this.token}) : super(key: key);
+  const AddRecipientPage({super.key, required this.token});
 
   @override
   _AddRecipientPageState createState() => _AddRecipientPageState();
@@ -58,7 +58,7 @@ class _AddRecipientPageState extends State<AddRecipientPage> {
 
 class AddCBEBeneficiaryPage extends StatelessWidget {
   final String token;
-  const AddCBEBeneficiaryPage({Key? key, required this.token}) : super(key: key);
+  const AddCBEBeneficiaryPage({super.key, required this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class AddCBEBeneficiaryPage extends StatelessWidget {
 class CBEBeneficiaryForm extends StatefulWidget {
   final String token;
 
-  const CBEBeneficiaryForm({Key? key, required this.token}) : super(key: key);
+  const CBEBeneficiaryForm({super.key, required this.token});
 
   @override
   _CBEBeneficiaryFormState createState() => _CBEBeneficiaryFormState();
@@ -261,10 +261,10 @@ void _submitForm() async {
           const SizedBox(height: 16),
 Center(
   child: isLoading
-      ? CircularProgressIndicator()
+      ? const CircularProgressIndicator()
       : ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 115, 3, 150), // Button background color
+            backgroundColor: const Color.fromARGB(255, 115, 3, 150), // Button background color
             foregroundColor: Colors.white, // Button text color
           ),
           onPressed: _submitForm, // Callback function for the button press
@@ -282,7 +282,7 @@ Center(
 class AddOtherBankBeneficiaryPage extends StatelessWidget {
   final String token;
 
-  const AddOtherBankBeneficiaryPage({Key? key, required this.token}) : super(key: key);
+  const AddOtherBankBeneficiaryPage({super.key, required this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +299,7 @@ class AddOtherBankBeneficiaryPage extends StatelessWidget {
 class OtherBankBeneficiaryForm extends StatefulWidget {
   final String token;
 
-  const OtherBankBeneficiaryForm({Key? key, required this.token}) : super(key: key);
+  const OtherBankBeneficiaryForm({super.key, required this.token});
 
   @override
   _OtherBankBeneficiaryFormState createState() => _OtherBankBeneficiaryFormState();
@@ -396,13 +396,13 @@ class ConfirmPage extends StatelessWidget {
   final ValueNotifier<bool> isSubmitLoading = ValueNotifier(false);
 
   ConfirmPage({
-    Key? key,
+    super.key,
     required this.accountNumber,
     required this.beneficiaryName,
     required this.nickName,
     required this.cif,
     required this.token,
-  }) : super(key: key);
+  });
 
   Map<String, String> _buildHeaders() {
     return {
@@ -469,15 +469,13 @@ class ConfirmPage extends StatelessWidget {
 
   // Show the status message in a dialog
   final overlayState = Overlay.of(context);
-  if (overlayState != null) {
-    showTopSnackBar(
-      overlayState,
-      CustomSnackBar.success(
-        message: statusMessage,
-        backgroundColor: messageColor,
-      ),
-    );
-  }
+  showTopSnackBar(
+    overlayState,
+    CustomSnackBar.success(
+      message: statusMessage,
+      backgroundColor: messageColor,
+    ),
+  );
 
   if (messageColor == Colors.green) {
     Navigator.of(context).pop();

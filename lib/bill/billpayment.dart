@@ -350,14 +350,14 @@ class _BillPaymentPageState extends State<BillPaymentPage> {
                           }
                         },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
+                    backgroundColor: WidgetStateProperty.all<Color>(
                         const Color.fromARGB(255, 185, 3, 155)),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    padding: MaterialStateProperty.all<EdgeInsets>(
+                        WidgetStateProperty.all<Color>(Colors.white),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
                         const EdgeInsets.symmetric(
                             horizontal: 100, vertical: 12)),
-                    textStyle: MaterialStateProperty.all<TextStyle>(
+                    textStyle: WidgetStateProperty.all<TextStyle>(
                         const TextStyle(fontSize: 16)),
                   ),
                   child: _isLoading

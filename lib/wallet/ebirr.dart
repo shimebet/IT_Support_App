@@ -131,7 +131,7 @@ class _EbirrPageState extends State<EbirrPage> {
     final account = _phoneController.text;
     final formattedBeneficiaryName = account.replaceAll('251', '');
     final now = DateTime.now();
-    final formattedNow = now.toUtc().toIso8601String().split('.').first + 'Z';
+    final formattedNow = '${now.toUtc().toIso8601String().split('.').first}Z';
 
     final body = jsonEncode({
       "amount": _amountController.text,
@@ -298,12 +298,12 @@ class _EbirrPageState extends State<EbirrPage> {
                         _performEbirrTransaction();
                       },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
                 child: _isLoading

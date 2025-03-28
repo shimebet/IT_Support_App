@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class ScheduleTransferPage extends StatefulWidget {
   final String token;
-  const ScheduleTransferPage({Key? key, required this.token}) : super(key: key);
+  const ScheduleTransferPage({super.key, required this.token});
 
   @override
   _ScheduleTransferPageState createState() => _ScheduleTransferPageState();
@@ -93,7 +93,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
       'Content-Type': 'application/json',
       'X-Kony-App-Key': ApiHeaders.appKey,
       'X-Kony-App-Secret': ApiHeaders.appSecret,
-      "X-Kony-ReportingParams": '{\"os\":\"98.0.4758.109}'
+      "X-Kony-ReportingParams": '{"os":"98.0.4758.109}'
     };
   }
 
@@ -156,7 +156,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: BorderRadius.circular(8),
@@ -170,16 +170,16 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
             ),
             child: Text(
               message,
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
         ),
       ),
     );
 
-    overlay?.insert(overlayEntry);
+    overlay.insert(overlayEntry);
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       overlayEntry.remove();
       Navigator.of(context)
           .pop(); // Navigate back after the snackbar disappears
@@ -262,13 +262,13 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                   : Form(
                       key: _formKey,
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             DropdownButtonFormField<String>(
                               decoration:
-                                  InputDecoration(labelText: 'Transfer From'),
+                                  const InputDecoration(labelText: 'Transfer From'),
                               value: selectedFromAccount,
                               items: _accounts.map((account) {
                                 String accountName = account['accountName'];
@@ -276,22 +276,20 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                                 String shortenedName = '';
 
                                 // Get first three characters of the first three words
-                                if (nameParts.length >= 1) {
+                                if (nameParts.isNotEmpty) {
                                   shortenedName += nameParts[0].length > 3
                                       ? nameParts[0].substring(0, 3)
                                       : nameParts[0];
                                 }
                                 if (nameParts.length >= 2) {
-                                  shortenedName += ' ' +
-                                      (nameParts[1].length > 3
+                                  shortenedName += ' ${nameParts[1].length > 3
                                           ? nameParts[1].substring(0, 3)
-                                          : nameParts[1]);
+                                          : nameParts[1]}';
                                 }
                                 if (nameParts.length >= 3) {
-                                  shortenedName += ' ' +
-                                      (nameParts[2].length > 3
+                                  shortenedName += ' ${nameParts[2].length > 3
                                           ? nameParts[2].substring(0, 3)
-                                          : nameParts[2]);
+                                          : nameParts[2]}';
                                 }
 
                                 String displayText =
@@ -312,7 +310,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                             ),
                             DropdownButtonFormField<String>(
                               decoration:
-                                  InputDecoration(labelText: 'Transfer To'),
+                                  const InputDecoration(labelText: 'Transfer To'),
                               value: selectedToAccount,
                               items: payees.map((payee) {
                                 String displayText =
@@ -342,14 +340,14 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                             TextFormField(
                               controller:
                                   _amountController, // Ensure the controller is linked
-                              decoration: InputDecoration(labelText: 'Amount'),
+                              decoration: const InputDecoration(labelText: 'Amount'),
                               keyboardType: TextInputType.number,
                               validator: (value) =>
                                   value!.isEmpty ? 'Enter amount' : null,
                             ),
                             DropdownButtonFormField<String>(
                               decoration:
-                                  InputDecoration(labelText: 'Frequency'),
+                                  const InputDecoration(labelText: 'Frequency'),
                               value: frequencyType,
                               items: ['Once', 'Daily', 'Weekly', 'Monthly']
                                   .map((frequency) => DropdownMenuItem<String>(
@@ -369,7 +367,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                               Column(
                                 children: [
                                   TextFormField(
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                         labelText: 'Scheduled Date'),
                                     onTap: () async {
                                       final date = await showDatePicker(
@@ -404,7 +402,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                                     controller: scheduledDateController,
                                   ),
                                   TextFormField(
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                         labelText: 'Frequency End Date'),
                                     onTap: () async {
                                       final date = await showDatePicker(
@@ -440,7 +438,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                                   ),
                                 ],
                               ),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                             TextFormField(
                               decoration: const InputDecoration(
                                   labelText: 'Note',
@@ -450,7 +448,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                               controller: _noteController,
                               maxLines: 1,
                             ),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                             Center(
                               child: ElevatedButton(
                                 onPressed: () {
@@ -502,7 +500,7 @@ class _ScheduleTransferPageState extends State<ScheduleTransferPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 134, 23,
+                                  backgroundColor: const Color.fromARGB(255, 134, 23,
                                       116), // Set background color
                                   foregroundColor:
                                       Colors.white, // Set text color to white
@@ -531,7 +529,7 @@ class ConfirmTransferPage extends StatefulWidget {
   final Future<void> Function() onConfirm;
 
   const ConfirmTransferPage({
-    Key? key,
+    super.key,
     required this.token,
     required this.fromAccount,
     required this.toAccount,
@@ -542,7 +540,7 @@ class ConfirmTransferPage extends StatefulWidget {
     required this.frequencyEndDate,
     required this.note,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   _ConfirmTransferPageState createState() => _ConfirmTransferPageState();
@@ -553,7 +551,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: Text('Confirm Transfer'),
+      title: const Text('Confirm Transfer'),
       backgroundColor: const Color.fromARGB(255, 134, 23, 116),
     ),
     body: Padding(

@@ -107,7 +107,7 @@ class _AirLinePageState extends State<AirLinePage> {
       _showConfirmationPage();
     } else {
       globalState.setLoading(false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Failed to get amount.'),
       ));
     }
@@ -121,7 +121,7 @@ class _AirLinePageState extends State<AirLinePage> {
     final headers = _buildHeaders();
 
     String formatDateTime(DateTime dateTime) {
-      return dateTime.toUtc().toIso8601String().split('.').first + 'Z';
+      return '${dateTime.toUtc().toIso8601String().split('.').first}Z';
     }
 
     final now = DateTime.now();

@@ -8,7 +8,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => GlobalState(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(token: ''),
+        '/home': (context) =>  HomePage(token: '', username: '',),
       },
     );
   }

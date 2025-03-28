@@ -14,7 +14,7 @@ import 'package:flutter/rendering.dart';
 class TransferToBeneficiaryPage extends StatefulWidget {
   final String token;
 
-  const TransferToBeneficiaryPage({Key? key, required this.token}) : super(key: key);
+  const TransferToBeneficiaryPage({super.key, required this.token});
 
   @override
   _TransferToBeneficiaryPageState createState() => _TransferToBeneficiaryPageState();
@@ -159,7 +159,7 @@ class _TransferToBeneficiaryPageState extends State<TransferToBeneficiaryPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load user details')),
+          const SnackBar(content: Text('Failed to load user details')),
         );
       }
 
@@ -168,7 +168,7 @@ class _TransferToBeneficiaryPageState extends State<TransferToBeneficiaryPage> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all required fields')),
+        const SnackBar(content: Text('Please fill all required fields')),
       );
     }
   }
@@ -221,7 +221,7 @@ class _TransferToBeneficiaryPageState extends State<TransferToBeneficiaryPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'From Account'),
+                decoration: const InputDecoration(labelText: 'From Account'),
                 value: selectedFromAccount,
                 onChanged: (value) {
                   setState(() {
@@ -236,7 +236,7 @@ class _TransferToBeneficiaryPageState extends State<TransferToBeneficiaryPage> {
                 }).toList(),
               ),
 DropdownButtonFormField<String>(
-  decoration: InputDecoration(labelText: 'Beneficiary Account'),
+  decoration: const InputDecoration(labelText: 'Beneficiary Account'),
   value: selectedBeneficiaryAccount,
   onChanged: onBeneficiaryAccountSelected,
   items: beneficiaries.map((beneficiary) {
@@ -253,12 +253,12 @@ DropdownButtonFormField<String>(
  
 
               TextFormField(
-                decoration: InputDecoration(labelText: 'Beneficiary Name'),
+                decoration: const InputDecoration(labelText: 'Beneficiary Name'),
                 readOnly: true,
                 controller: TextEditingController(text: beneficiaryName),
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Amount'),
+                decoration: const InputDecoration(labelText: 'Amount'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   setState(() {
@@ -267,21 +267,21 @@ DropdownButtonFormField<String>(
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Note'),
+                decoration: const InputDecoration(labelText: 'Note'),
                 onChanged: (value) {
                   setState(() {
                     note = value;
                   });
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 Center(
   child: _isProcessing
-      ? CircularProgressIndicator()
+      ? const CircularProgressIndicator()
       : Container(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 115, 3, 150), 
+              backgroundColor: const Color.fromARGB(255, 115, 3, 150), 
               foregroundColor: Colors.white// Background color for the button
             ),
             onPressed: onContinue,
@@ -308,7 +308,7 @@ class ConfirmTransferPage extends StatefulWidget {
   final String token;
   final Map<String, dynamic> userDetails;
   const ConfirmTransferPage({
-    Key? key,
+    super.key,
     required this.amount,
     required this.fromAccount,
     required this.toAccount,
@@ -317,7 +317,7 @@ class ConfirmTransferPage extends StatefulWidget {
     required this.note,
     required this.token,
       required this.userDetails,
-  }) : super(key: key);
+  });
 
   @override
   _ConfirmTransferPageState createState() => _ConfirmTransferPageState();
@@ -564,7 +564,7 @@ void showCustomSnackBar(BuildContext context, Widget content) {
 
       // Show custom snackbar
       showCustomSnackBar(context, content);
-       Future.delayed(Duration(seconds: 1), () { 
+       Future.delayed(const Duration(seconds: 1), () { 
           Navigator.of(context).pop();
           // Pop the current page to go back
         });
@@ -691,16 +691,16 @@ void showCustomSnackBar(BuildContext context, Widget content) {
             const SizedBox(height: 20), // Add space before the button
             Center(
               child: _isProcessing
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: _createOneTimeTransfer,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 115, 3, 150)), 
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        padding: MaterialStateProperty.all<EdgeInsets>(
+                        backgroundColor: WidgetStateProperty.all<Color>(
+                            const Color.fromARGB(255, 115, 3, 150)), 
+                        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                        padding: WidgetStateProperty.all<EdgeInsets>(
                             const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-                        textStyle: MaterialStateProperty.all<TextStyle>(
+                        textStyle: WidgetStateProperty.all<TextStyle>(
                             const TextStyle(fontSize: 16)),
                       ),
                       child: const Text('Confirm'),

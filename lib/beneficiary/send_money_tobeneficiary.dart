@@ -14,7 +14,7 @@ import 'package:flutter/rendering.dart';
 class SendMoneyToBeneficiaryPage extends StatefulWidget {
   final String token;
   final String accountNumber;
-  const SendMoneyToBeneficiaryPage({Key? key, required this.token, required this.accountNumber}) : super(key: key);
+  const SendMoneyToBeneficiaryPage({super.key, required this.token, required this.accountNumber});
 
   @override
   _SendMoneyToBeneficiaryPageState createState() => _SendMoneyToBeneficiaryPageState();
@@ -48,6 +48,7 @@ void initState() {
 }
 
 
+  @override
   void dispose() {
     _accountNumberController.dispose();
     super.dispose();
@@ -190,7 +191,7 @@ void onBeneficiaryAccountSelected(String? accountNumber) {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load user details')),
+          const SnackBar(content: Text('Failed to load user details')),
         );
       }
 
@@ -199,7 +200,7 @@ void onBeneficiaryAccountSelected(String? accountNumber) {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all required fields')),
+        const SnackBar(content: Text('Please fill all required fields')),
       );
     }
   }
@@ -252,7 +253,7 @@ void onBeneficiaryAccountSelected(String? accountNumber) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'From Account'),
+                decoration: const InputDecoration(labelText: 'From Account'),
                 value: selectedFromAccount,
                 onChanged: (value) {
                   setState(() {
@@ -267,7 +268,7 @@ void onBeneficiaryAccountSelected(String? accountNumber) {
                 }).toList(),
               ),
             DropdownButtonFormField<String>(
-              decoration: InputDecoration(labelText: 'Beneficiary Account'),
+              decoration: const InputDecoration(labelText: 'Beneficiary Account'),
               value: selectedBeneficiaryAccount, // Use the initialized value here
               onChanged: (value) {
                 onBeneficiaryAccountSelected(value);
@@ -281,12 +282,12 @@ void onBeneficiaryAccountSelected(String? accountNumber) {
             ),
 
               TextFormField(
-                decoration: InputDecoration(labelText: 'Beneficiary Name'),
+                decoration: const InputDecoration(labelText: 'Beneficiary Name'),
                 readOnly: true,
                 controller: TextEditingController(text: beneficiaryName),
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Amount'),
+                decoration: const InputDecoration(labelText: 'Amount'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   setState(() {
@@ -295,21 +296,21 @@ void onBeneficiaryAccountSelected(String? accountNumber) {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Note'),
+                decoration: const InputDecoration(labelText: 'Note'),
                 onChanged: (value) {
                   setState(() {
                     note = value;
                   });
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 Center(
   child: _isProcessing
-      ? CircularProgressIndicator()
+      ? const CircularProgressIndicator()
       : Container(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 115, 3, 150), 
+              backgroundColor: const Color.fromARGB(255, 115, 3, 150), 
               foregroundColor: Colors.white// Background color for the button
             ),
             onPressed: onContinue,
@@ -336,7 +337,7 @@ class ConfirmTransferPage extends StatefulWidget {
   final String token;
   final Map<String, dynamic> userDetails;
   const ConfirmTransferPage({
-    Key? key,
+    super.key,
     required this.amount,
     required this.fromAccount,
     required this.toAccount,
@@ -345,7 +346,7 @@ class ConfirmTransferPage extends StatefulWidget {
     required this.note,
     required this.token,
       required this.userDetails,
-  }) : super(key: key);
+  });
 
   @override
   _ConfirmTransferPageState createState() => _ConfirmTransferPageState();
@@ -591,7 +592,7 @@ double amount = double.tryParse(widget.amount) ?? 0.0;
 
       // Show custom snackbar
       showCustomSnackBar(context, content);
-       Future.delayed(Duration(seconds: 1), () { 
+       Future.delayed(const Duration(seconds: 1), () { 
           Navigator.of(context).pop();
           // Pop the current page to go back
         });
@@ -718,16 +719,16 @@ double amount = double.tryParse(widget.amount) ?? 0.0;
             const SizedBox(height: 20), // Add space before the button
             Center(
               child: _isProcessing
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: _createOneTimeTransfer,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 115, 3, 150)), 
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        padding: MaterialStateProperty.all<EdgeInsets>(
+                        backgroundColor: WidgetStateProperty.all<Color>(
+                            const Color.fromARGB(255, 115, 3, 150)), 
+                        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                        padding: WidgetStateProperty.all<EdgeInsets>(
                             const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-                        textStyle: MaterialStateProperty.all<TextStyle>(
+                        textStyle: WidgetStateProperty.all<TextStyle>(
                             const TextStyle(fontSize: 16)),
                       ),
                       child: const Text('Confirm'),

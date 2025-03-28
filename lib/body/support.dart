@@ -28,9 +28,9 @@ class SupportPage extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: ListView(
           children: [
-            ExpansionTile(
-              title: const Text('FAQs'),
-              children: const [
+            const ExpansionTile(
+              title: Text('FAQs'),
+              children: [
                 ListTile(
                   title: Text('Q: What is this app about?'),
                   subtitle: Text(
@@ -43,9 +43,9 @@ class SupportPage extends StatelessWidget {
                 ),
               ],
             ),
-            ExpansionTile(
-              title: const Text('Terms and Conditions'),
-              children: const [
+            const ExpansionTile(
+              title: Text('Terms and Conditions'),
+              children: [
                 ListTile(
                   title: Text('Terms and Conditions'),
                   subtitle: Text(
@@ -54,9 +54,9 @@ class SupportPage extends StatelessWidget {
                 ),
               ],
             ),
-            ExpansionTile(
-              title: const Text('Privacy Policy'),
-              children: const [
+            const ExpansionTile(
+              title: Text('Privacy Policy'),
+              children: [
                 ListTile(
                   title: Text('Privacy Policy'),
                   subtitle: Text(
@@ -143,14 +143,14 @@ class SupportPage extends StatelessWidget {
                       }
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      backgroundColor: WidgetStateProperty.all<Color>(
                           const Color.fromARGB(255, 185, 3, 155)),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          WidgetStateProperty.all<Color>(Colors.white),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
                           const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12)),
-                      textStyle: MaterialStateProperty.all<TextStyle>(
+                      textStyle: WidgetStateProperty.all<TextStyle>(
                           const TextStyle(fontSize: 16)),
                     ),
                     child: const Text('Submit'),

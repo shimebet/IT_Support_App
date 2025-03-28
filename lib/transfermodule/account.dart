@@ -200,7 +200,7 @@ class _AccountDisputePageState extends State<AccountDisputePage> {
 
   Map<String, String> _buildHeaders() {
     return {
-      'X-Kony-Authorization': '${widget.token}',
+      'X-Kony-Authorization': widget.token,
       'Content-Type': 'application/json',
       'X-Kony-App-Key': ApiHeaders.appKey,
       'X-Kony-App-Secret': ApiHeaders.appSecret,
@@ -243,7 +243,7 @@ class _AccountDisputePageState extends State<AccountDisputePage> {
       body: Column(
         children: [
           globalState.isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : Container(
                   padding: const EdgeInsets.only(right: 12.0, left: 6.0),
                   child: Card(

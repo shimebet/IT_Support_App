@@ -9,7 +9,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 class ManageBeneficiaryPage extends StatelessWidget {
   final String token;
 
-  const ManageBeneficiaryPage({Key? key, required this.token}): super(key: key);
+  const ManageBeneficiaryPage({super.key, required this.token});
 
 void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountNumber) {
   Navigator.of(context).push(
@@ -59,20 +59,20 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                         children: [
                         Row(
                           children: [
-                            Icon(Icons.attach_money, color: Colors.green),
+                            const Icon(Icons.attach_money, color: Colors.green),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop(); // Close the drawer
                                 _navigateToSendMoneyToBeneficiaryPage(context, beneficiary.accountNumber);
                               },
-                              child: Text('Send Money', style: TextStyle(color: Colors.green)),
+                              child: const Text('Send Money', style: TextStyle(color: Colors.green)),
                             ),
                           ],
                         ),
 
                           Row(
                             children: [
-                              Icon(Icons.edit, color: Colors.blue),
+                              const Icon(Icons.edit, color: Colors.blue),
                               TextButton(
                                 onPressed: () {
                                   Navigator.push(
@@ -85,18 +85,18 @@ void _navigateToSendMoneyToBeneficiaryPage(BuildContext context, String accountN
                                     ),
                                   );
                                 },
-                                child: Text('Edit', style: TextStyle(color: Colors.blue)),
+                                child: const Text('Edit', style: TextStyle(color: Colors.blue)),
                               ),
                             ],
                           ),
                           Row(
                             children: [
-                              Icon(Icons.delete, color: Colors.red),
+                              const Icon(Icons.delete, color: Colors.red),
                               TextButton(
                                 onPressed: () {
                                   _deleteBeneficiary(context, beneficiary);
                                 },
-                                child: Text('Delete', style: TextStyle(color: Colors.red)),
+                                child: const Text('Delete', style: TextStyle(color: Colors.red)),
                               ),
                             ],
                           ),
@@ -248,17 +248,15 @@ Widget _buildRow(BuildContext context, String label, String value) {
 
     // Use Overlay.of(context) to get the OverlayState
     final overlayState = Overlay.of(context);
-    if (overlayState != null) {
-      showTopSnackBar(
-        overlayState,
-        CustomSnackBar.success(
-          // or CustomSnackBar.error, CustomSnackBar.info
-          message: statusMessage,
-          backgroundColor: messageColor,
-        ),
-      );
+    showTopSnackBar(
+      overlayState,
+      CustomSnackBar.success(
+        // or CustomSnackBar.error, CustomSnackBar.info
+        message: statusMessage,
+        backgroundColor: messageColor,
+      ),
+    );
     }
-  }
 }
 
 class EditBeneficiaryPage extends StatefulWidget {
@@ -266,8 +264,7 @@ class EditBeneficiaryPage extends StatefulWidget {
   final Beneficiary beneficiary;
 
   const EditBeneficiaryPage(
-      {Key? key, required this.token, required this.beneficiary})
-      : super(key: key);
+      {super.key, required this.token, required this.beneficiary});
 
   @override
   _EditBeneficiaryPageState createState() => _EditBeneficiaryPageState();
@@ -379,17 +376,15 @@ class _EditBeneficiaryPageState extends State<EditBeneficiaryPage> {
 
     // Use Overlay.of(context) to get the OverlayState
     final overlayState = Overlay.of(context);
-    if (overlayState != null) {
-      showTopSnackBar(
-        overlayState,
-        CustomSnackBar.success(
-          // or CustomSnackBar.error, CustomSnackBar.info
-          message: statusMessage,
-          backgroundColor: messageColor,
-        ),
-      );
+    showTopSnackBar(
+      overlayState,
+      CustomSnackBar.success(
+        // or CustomSnackBar.error, CustomSnackBar.info
+        message: statusMessage,
+        backgroundColor: messageColor,
+      ),
+    );
     }
-  }
 
   Map<String, String> _buildHeaders() {
     return {
@@ -468,14 +463,14 @@ class _EditBeneficiaryPageState extends State<EditBeneficiaryPage> {
                             }
                           },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      backgroundColor: WidgetStateProperty.all<Color>(
                           const Color.fromARGB(255, 185, 3, 155)),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          WidgetStateProperty.all<Color>(Colors.white),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
                           const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12)),
-                      textStyle: MaterialStateProperty.all<TextStyle>(
+                      textStyle: WidgetStateProperty.all<TextStyle>(
                           const TextStyle(fontSize: 16)),
                     ),
                     child: _isLoading

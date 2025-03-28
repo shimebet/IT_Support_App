@@ -7,7 +7,7 @@ import '../constants.dart';
 
 class TopUpPage extends StatefulWidget {
   final String token;
-  const TopUpPage({Key? key, required this.token}) : super(key: key);
+  const TopUpPage({super.key, required this.token});
 
   @override
   _TopUpPageState createState() => _TopUpPageState();
@@ -146,7 +146,7 @@ class _TopUpPageState extends State<TopUpPage> {
 
       // Function to format date and time
       String formatDateTime(DateTime dateTime) {
-        return dateTime.toUtc().toIso8601String().split('.').first + 'Z';
+        return '${dateTime.toUtc().toIso8601String().split('.').first}Z';
       }
 
       String phone = phoneNumber.replaceAll('+251-', '');
@@ -193,7 +193,7 @@ class _TopUpPageState extends State<TopUpPage> {
         final response = await http.post(url, headers: headers, body: body);
         final responseBody = jsonDecode(response.body);    
         if (response.statusCode == 200 && responseBody['status'] == 'success') {
-             await Future.delayed(Duration(seconds: 2));
+             await Future.delayed(const Duration(seconds: 2));
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -289,7 +289,7 @@ class _TopUpPageState extends State<TopUpPage> {
     final url = Uri.parse(ApiConstants.performTransaction);
         final headers = _buildHeaders();
     String formatDateTime(DateTime dateTime) {
-        return dateTime.toUtc().toIso8601String().split('.').first + 'Z';
+        return '${dateTime.toUtc().toIso8601String().split('.').first}Z';
       }
 
       String phone = phoneNumber.replaceAll('+251-', '');
@@ -401,7 +401,7 @@ class _TopUpPageState extends State<TopUpPage> {
   }
 
   String _shortenAccountName(String text) {
-    if (text.length >= 1) {
+    if (text.isNotEmpty) {
       return text.substring(0, 1);
     }
     return text;
@@ -507,7 +507,7 @@ appBar: AppBar(
         if (_selectedService != null && (_isSelfSelected || _isOthersSelected)) ...[
           DropdownButtonFormField<Map<String, dynamic>>(
             value: _selectedAccount,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Select Account Number',
             ),
             items: accounts.map((account) {
@@ -530,7 +530,7 @@ appBar: AppBar(
           ),
           TextFormField(
             controller: _amountController,
-            decoration: InputDecoration(labelText: 'Amount'),
+            decoration: const InputDecoration(labelText: 'Amount'),
             keyboardType: TextInputType.number,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -542,7 +542,7 @@ appBar: AppBar(
           if (!_isSelfSelected)
             TextFormField(
               controller: _phoneNumberController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
+              decoration: const InputDecoration(labelText: 'Phone Number'),
               keyboardType: TextInputType.phone,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -553,24 +553,24 @@ appBar: AppBar(
             ),
           TextFormField(
             controller: _noteController,
-            decoration: InputDecoration(labelText: 'Note'),
+            decoration: const InputDecoration(labelText: 'Note'),
           ),
           ElevatedButton(
             onPressed: _isLoading ? null : _submitTopUp,
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
-                : Text('Top Up'),
+                : const Text('Top Up'),
           ),
         ],
       ],

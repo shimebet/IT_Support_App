@@ -13,7 +13,7 @@ import 'package:flutter/rendering.dart';
 class LocalMoneyTransferPage extends StatefulWidget {
   final String token;
 
-  const LocalMoneyTransferPage({Key? key, required this.token}) : super(key: key);
+  const LocalMoneyTransferPage({super.key, required this.token});
 
   @override
   _LocalMoneyTransferPageState createState() => _LocalMoneyTransferPageState();
@@ -380,29 +380,27 @@ void showCustomSnackBar(BuildContext context, Widget content) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         DropdownButtonFormField<String>(
-                          decoration: InputDecoration(labelText: 'Transfer From'),
+                          decoration: const InputDecoration(labelText: 'Transfer From'),
                           value: selectedFromAccount,
                           items: _accounts.map((account) {
                             String accountName = account['accountName'];
                             List<String> nameParts = accountName.split(' ');
                             String shortenedName = '';
 
-                            if (nameParts.length >= 1) {
+                            if (nameParts.isNotEmpty) {
                               shortenedName += nameParts[0].length > 3
                                   ? nameParts[0].substring(0, 3)
                                   : nameParts[0];
                             }
                             if (nameParts.length >= 2) {
-                              shortenedName += ' ' +
-                                  (nameParts[1].length > 3
+                              shortenedName += ' ${nameParts[1].length > 3
                                       ? nameParts[1].substring(0, 3)
-                                      : nameParts[1]);
+                                      : nameParts[1]}';
                             }
                             if (nameParts.length >= 3) {
-                              shortenedName += ' ' +
-                                  (nameParts[2].length > 3
+                              shortenedName += ' ${nameParts[2].length > 3
                                       ? nameParts[2].substring(0, 3)
-                                      : nameParts[2]);
+                                      : nameParts[2]}';
                             }
 
                             String displayText =
@@ -503,7 +501,7 @@ class ConfirmTransferPage extends StatefulWidget {
   final Future<void> Function() onConfirm;
 
   const ConfirmTransferPage({
-    Key? key,
+    super.key,
     required this.token,
     required this.fromAccount,
     required this.toAccount,
@@ -514,7 +512,7 @@ class ConfirmTransferPage extends StatefulWidget {
     required this.charges,
     required this.email,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   _ConfirmTransferPageState createState() => _ConfirmTransferPageState();
@@ -527,7 +525,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Confirm Transfer'),
+        title: const Text('Confirm Transfer'),
         backgroundColor: const Color.fromARGB(255, 134, 23, 116),
       ),
       body: Padding(

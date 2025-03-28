@@ -9,7 +9,7 @@ import '../constants.dart';
  
 class CbeBirPage extends StatefulWidget {
   final String token;
-  const CbeBirPage({Key? key, required this.token}) : super(key: key);
+  const CbeBirPage({super.key, required this.token});
 
   @override
   _CbeBirPageState createState() => _CbeBirPageState();
@@ -124,7 +124,7 @@ class _CbeBirPageState extends State<CbeBirPage> {
     String formattedValue = concatenatedValue.replaceAll('Topup', '');
 
     String formatDateTime(DateTime dateTime) {
-      return dateTime.toUtc().toIso8601String().split('.').first + 'Z';
+      return '${dateTime.toUtc().toIso8601String().split('.').first}Z';
     }
 
     final now = DateTime.now();
@@ -201,7 +201,7 @@ class _CbeBirPageState extends State<CbeBirPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Transfer Failed'),
+        title: const Text('Transfer Failed'),
         content: Text(message),
         actions: [
           TextButton(
@@ -210,7 +210,7 @@ class _CbeBirPageState extends State<CbeBirPage> {
             Navigator.of(context).pop();
             Navigator.of(context).pop();
             }, 
-            child: Text('OK'), 
+            child: const Text('OK'), 
           ),
         ],
       ),
@@ -361,12 +361,12 @@ class _CbeBirPageState extends State<CbeBirPage> {
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: const Text('Continue'),
@@ -501,12 +501,12 @@ class _CbeBirPageState extends State<CbeBirPage> {
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: const Text('Continue'),
@@ -635,7 +635,7 @@ class ConfirmationPage extends StatelessWidget {
   final VoidCallback onSubmit;
 
   const ConfirmationPage({
-    Key? key,
+    super.key,
     required this.fromAccount,
     required this.phoneNumber,
     required this.amount,
@@ -643,7 +643,7 @@ class ConfirmationPage extends StatelessWidget {
     required this.beneficiaryName,
     required this.transactionDate,
     required this.onSubmit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -707,14 +707,14 @@ class SuccessPage extends StatelessWidget {
   final DateTime transactionDate;
 
   const SuccessPage({
-    Key? key,
+    super.key,
     required this.fromAccount,
     required this.phoneNumber,
     required this.amount,
     required this.note,
     required this.beneficiaryName,
     required this.transactionDate,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -745,12 +745,12 @@ class SuccessPage extends StatelessWidget {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
+                backgroundColor: WidgetStateProperty.all<Color>(
                     const Color.fromARGB(255, 185, 3, 155)),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                padding: MaterialStateProperty.all<EdgeInsets>(
+                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                padding: WidgetStateProperty.all<EdgeInsets>(
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-                textStyle: MaterialStateProperty.all<TextStyle>(
+                textStyle: WidgetStateProperty.all<TextStyle>(
                     const TextStyle(fontSize: 16)),
               ),
               child: const Text('Done'),

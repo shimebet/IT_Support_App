@@ -108,7 +108,7 @@ class _InternationalTransferPageState extends State<InternationalTransferPage> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
@@ -730,16 +730,16 @@ class _InternationalTransferPageState extends State<InternationalTransferPage> {
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                 : const Text('Continue'),
@@ -878,16 +878,16 @@ class _InternationalTransferPageState extends State<InternationalTransferPage> {
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                 : const Text('Continue'),
@@ -1089,16 +1089,16 @@ class _InternationalTransferPageState extends State<InternationalTransferPage> {
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                 : const Text('Continue'),
@@ -1281,7 +1281,7 @@ class ConfirmationPage extends StatelessWidget {
         width: 1.0,
       ),
     ),
-    color: Color.fromARGB(255, 206, 238, 177), // Corrected backgroundColor placement
+    color: const Color.fromARGB(255, 206, 238, 177), // Corrected backgroundColor placement
     elevation: 1.0,
     child: Padding( // Added Padding inside the Card to give space inside the Card
       padding: const EdgeInsets.all(16.0),
@@ -1386,11 +1386,6 @@ class ConfirmationPage extends StatelessWidget {
                             globalState.setLoading(false);
                           }
                         },
-                  child: globalState.isLoading
-                      ? const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        )
-                      : const Text('Confirm'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: const Color.fromARGB(255, 161, 1, 182), // Text color for the button
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -1398,6 +1393,11 @@ class ConfirmationPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  child: globalState.isLoading
+                      ? const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                      : const Text('Confirm'),
                 ),
               ],
             ),

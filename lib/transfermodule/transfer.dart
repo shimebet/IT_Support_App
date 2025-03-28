@@ -114,7 +114,7 @@ double? getAmount() {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
@@ -464,22 +464,22 @@ showCustomSnackBar(
           children: [
             const TextSpan(text: 'Message: '),
             TextSpan(
-              text: '$message',
+              text: message,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nReference ID: '),
             TextSpan(
-              text: '$referenceId',
+              text: referenceId,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nFrom Account: '),
             TextSpan(
-              text: '$fromAccountNumber',
+              text: fromAccountNumber,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nTo Account: '),
             TextSpan(
-              text: '$toAccountNumber',
+              text: toAccountNumber,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nAmount: '),
@@ -489,7 +489,7 @@ showCustomSnackBar(
             ),
             const TextSpan(text: '\n\nProcessing Date: '),
             TextSpan(
-              text: '$processingDate',
+              text: processingDate,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -604,22 +604,22 @@ showCustomSnackBar(
           children: [
             const TextSpan(text: 'Message: '),
             TextSpan(
-              text: '$message',
+              text: message,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nReference ID: '),
             TextSpan(
-              text: '$referenceId',
+              text: referenceId,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nFrom Account: '),
             TextSpan(
-              text: '$fromAccountNumber',
+              text: fromAccountNumber,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nTo Account: '),
             TextSpan(
-              text: '$toAccountNumber',
+              text: toAccountNumber,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const TextSpan(text: '\n\nAmount: '),
@@ -629,7 +629,7 @@ showCustomSnackBar(
             ),
             const TextSpan(text: '\n\nProcessing Date: '),
             TextSpan(
-              text: '$processingDate',
+              text: processingDate,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -806,7 +806,7 @@ TextFormField(
   decoration: const InputDecoration(
     labelText: 'Amount',
   ),
-  keyboardType: TextInputType.numberWithOptions(decimal: true),
+  keyboardType: const TextInputType.numberWithOptions(decimal: true),
   validator: (value) {
     if (value == null || value.isEmpty) {
       return 'Please enter the amount to transfer';
@@ -855,16 +855,16 @@ TextFormField(
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                 : const Text('Continue'),
@@ -1037,7 +1037,7 @@ TextFormField(
   decoration: const InputDecoration(
     labelText: 'Amount',
   ),
-  keyboardType: TextInputType.numberWithOptions(decimal: true),
+  keyboardType: const TextInputType.numberWithOptions(decimal: true),
   validator: (value) {
     if (value == null || value.isEmpty) {
       return 'Please enter the amount to transfer';
@@ -1074,16 +1074,16 @@ TextFormField(
               }
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
+              backgroundColor: WidgetStateProperty.all<Color>(
                   const Color.fromARGB(255, 185, 3, 155)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+              padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
+              textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(fontSize: 16)),
             ),
             child: _isLoading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
                 : const Text('Continue'),
@@ -1120,7 +1120,8 @@ TextFormField(
     );
   }
 
-Widget build(BuildContext context) {
+@override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -1329,12 +1330,6 @@ class ConfirmationPage extends StatelessWidget {
                                   globalState.setLoading(false);
                                 }
                               },
-                        child: globalState.isLoading
-                            ? const CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white),
-                              )
-                            : const Text('Confirm'),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor:
@@ -1345,6 +1340,12 @@ class ConfirmationPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        child: globalState.isLoading
+                            ? const CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              )
+                            : const Text('Confirm'),
                       ),
                     ],
                   ),
