@@ -14,6 +14,8 @@ class AdminHomePage extends StatefulWidget {
 class _AdminHomePageState extends State<AdminHomePage> {
   List<dynamic> users = [];
   List<dynamic> issues = [];
+  List<dynamic> filteredUsers = [];
+  List<dynamic> filteredIssues = [];
   bool isLoading = true;
 
   @override
@@ -22,43 +24,63 @@ class _AdminHomePageState extends State<AdminHomePage> {
     fetchAllData();
   }
 
-Future<void> fetchAllData() async {
-  setState(() => isLoading = true);
-  try {
-    final userRes = await http.get(
-      Uri.parse('https://node-api-g7fs.onrender.com/api/users'),
-      headers: {'Authorization': 'Bearer ${widget.token}'},
-    );
+  Future<void> fetchAllData() async {
+    setState(() => isLoading = true);
+    try {
+      final userRes = await http.get(
+        Uri.parse('https://node-api-g7fs.onrender.com/api/users'),
+        headers: {'Authorization': 'Bearer ${widget.token}'},
+      );
 
-    final issueRes = await http.get(
-      Uri.parse('https://node-api-g7fs.onrender.com/api/support'),
-      headers: {'Authorization': 'Bearer ${widget.token}'},
-    );
+      final issueRes = await http.get(
+        Uri.parse('https://node-api-g7fs.onrender.com/api/support'),
+        headers: {'Authorization': 'Bearer ${widget.token}'},
+      );
 
-    // print("Users status: ${userRes.statusCode}");
-    // print("Users body: ${userRes.body}");
-    // print("Issues status: ${issueRes.statusCode}");
-    // print("Issues body: ${issueRes.body}");
+      if (userRes.statusCode == 200 && issueRes.statusCode == 200) {
+        final decodedUserData = json.decode(userRes.body);
+        final decodedIssueData = json.decode(issueRes.body);
 
-    if (userRes.statusCode == 200 && issueRes.statusCode == 200) {
-      final decodedUserData = json.decode(userRes.body);
-      final decodedIssueData = json.decode(issueRes.body);
-
-      setState(() {
-        users = decodedUserData is List ? decodedUserData : decodedUserData['users'] ?? [];
-        issues = decodedIssueData is List ? decodedIssueData : decodedIssueData['issues'] ?? [];
-      });
-    } else {
-      throw Exception("Failed to load data: "
-          "users(${userRes.statusCode}), issues(${issueRes.statusCode})");
+        setState(() {
+          users = decodedUserData is List ? decodedUserData : decodedUserData['users'] ?? [];
+          issues = decodedIssueData is List ? decodedIssueData : decodedIssueData['issues'] ?? [];
+          filteredUsers = users;
+          filteredIssues = issues;
+        });
+      } else {
+        throw Exception("Failed to load data: users(${userRes.statusCode}), issues(${issueRes.statusCode})");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    } finally {
+      setState(() => isLoading = false);
     }
-  } catch (e) {
-    print(" Error fetching data: $e");
-  } finally {
-    setState(() => isLoading = false);
   }
-}
 
+  void filterUsers(String query) {
+    setState(() {
+      filteredUsers = users.where((user) {
+        final firstName = user['firstName']?.toLowerCase() ?? '';
+        final username = user['username']?.toLowerCase() ?? '';
+        return firstName.contains(query.toLowerCase()) || username.contains(query.toLowerCase());
+      }).toList();
+    });
+  }
+
+  void filterIssues(String query) {
+    setState(() {
+      filteredIssues = issues.where((issue) {
+        final title = issue['issueTitle']?.toLowerCase() ?? '';
+        final desc = issue['issueDescription']?.toLowerCase() ?? '';
+        return title.contains(query.toLowerCase()) || desc.contains(query.toLowerCase());
+      }).toList();
+    });
+  }
+
+  String shorten(String text, [int maxLen = 10]) {
+    if (text.isEmpty) return '';
+    return text.length <= maxLen ? text : '${text.substring(0, maxLen)}...';
+  }
 
   void showEditUserDialog(Map user) {
     final firstNameCtrl = TextEditingController(text: user['firstName']);
@@ -79,16 +101,13 @@ Future<void> fetchAllData() async {
               TextField(controller: lastNameCtrl, decoration: const InputDecoration(labelText: "Last Name")),
               TextField(controller: emailCtrl, decoration: const InputDecoration(labelText: "Email")),
               DropdownButtonFormField<String>(
-  value: roleCtrl.text,
-  onChanged: (value) {
-    setState(() => roleCtrl.text = value ?? '');
-  },
-  items: ['Admin', 'IT_Team', 'Branch_Manager', 'Branch_Staff']
-      .map((role) => DropdownMenuItem(value: role, child: Text(role)))
-      .toList(),
-  decoration: const InputDecoration(labelText: "Role"),
-),
-
+                value: roleCtrl.text,
+                onChanged: (value) => setState(() => roleCtrl.text = value ?? ''),
+                items: ['Admin', 'IT_Team', 'Branch_Manager', 'Branch_Staff']
+                    .map((role) => DropdownMenuItem(value: role, child: Text(role)))
+                    .toList(),
+                decoration: const InputDecoration(labelText: "Role"),
+              ),
               TextField(controller: branchCtrl, decoration: const InputDecoration(labelText: "Branch Name")),
             ],
           ),
@@ -112,8 +131,8 @@ Future<void> fetchAllData() async {
                   'branchName': branchCtrl.text,
                 }),
               );
-              Navigator.pop(context); // Close loading
-              Navigator.pop(context); // Close dialog
+              Navigator.pop(context);
+              Navigator.pop(context);
               if (res.statusCode == 200) {
                 fetchAllData();
                 showSuccessDialog("User updated successfully.");
@@ -161,8 +180,8 @@ Future<void> fetchAllData() async {
                   'issueSolution': solutionCtrl.text,
                 }),
               );
-              Navigator.pop(context); // Close loading
-              Navigator.pop(context); // Close dialog
+              Navigator.pop(context);
+              Navigator.pop(context);
               if (res.statusCode == 200) {
                 fetchAllData();
                 showSuccessDialog("Issue updated successfully.");
@@ -220,7 +239,7 @@ Future<void> fetchAllData() async {
                 Uri.parse('https://node-api-g7fs.onrender.com/api/${isUser ? "users" : "support"}/$id'),
                 headers: {'Authorization': 'Bearer ${widget.token}'},
               );
-              Navigator.pop(context); // Close loading
+              Navigator.pop(context);
               if (res.statusCode == 200) {
                 fetchAllData();
                 showSuccessDialog("${isUser ? "User" : "Issue"} deleted successfully.");
@@ -262,11 +281,6 @@ Future<void> fetchAllData() async {
     );
   }
 
-  String shorten(String text, [int maxLen = 10]) {
-    if (text.isEmpty) return '';
-    return text.length <= maxLen ? text : '${text.substring(0, maxLen)}...';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,8 +293,13 @@ Future<void> fetchAllData() async {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text("👥 Users", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    decoration: const InputDecoration(labelText: "Search by first name or username"),
+                    onChanged: filterUsers,
+                  ),
                   const SizedBox(height: 10),
-                  ...users.map((user) {
+                  ...filteredUsers.map((user) {
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       child: ListTile(
@@ -310,12 +329,18 @@ Future<void> fetchAllData() async {
                       ),
                     );
                   }),
+
                   const SizedBox(height: 20),
                   const Divider(thickness: 2),
                   const SizedBox(height: 10),
                   const Text("📝 Issue Reports", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    decoration: const InputDecoration(labelText: "Search by title or description"),
+                    onChanged: filterIssues,
+                  ),
                   const SizedBox(height: 10),
-                  ...issues.map((issue) {
+                  ...filteredIssues.map((issue) {
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       child: ListTile(
