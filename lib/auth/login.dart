@@ -112,91 +112,98 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<void> login() async {
-    String enteredUsername = usernameController.text.trim();
-    String enteredPassword = passwordController.text.trim();
+ Future<void> login() async {
+  String enteredUsername = usernameController.text.trim();
+  String enteredPassword = passwordController.text.trim();
 
-    if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
-      setState(() {
-        usernameError = enteredUsername.isEmpty;
-        passwordError = enteredPassword.isEmpty;
-        showInvalidCredentials = false;
-        isNetworkError = false;
-      });
-      return;
-    }
-
+  if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
     setState(() {
-      _isLoading = true;
-      usernameError = false;
-      passwordError = false;
+      usernameError = enteredUsername.isEmpty;
+      passwordError = enteredPassword.isEmpty;
       showInvalidCredentials = false;
       isNetworkError = false;
     });
+    return;
+  }
 
-    final url = Uri.parse('https://node-api-g7fs.onrender.com/api/users/login');
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({
-      'username': enteredUsername,
-      'password': enteredPassword,
-    });
+  setState(() {
+    _isLoading = true;
+    usernameError = false;
+    passwordError = false;
+    showInvalidCredentials = false;
+    isNetworkError = false;
+  });
 
-    try {
-      final response = await http.post(url, headers: headers, body: body);
+  final url = Uri.parse('https://node-api-g7fs.onrender.com/api/users/login');
+  final headers = {'Content-Type': 'application/json'};
+  final body = json.encode({
+    'username': enteredUsername,
+    'password': enteredPassword,
+  });
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
+  try {
+    final response = await http.post(url, headers: headers, body: body);
 
-        final String token = responseData['token'] ?? '';
-        final String email = responseData['email'] ?? '';
-        final String username = responseData['username'] ?? enteredUsername;
-        final String userId = responseData['_id'];
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
 
-        final globalState = Provider.of<GlobalState>(context, listen: false);
-        globalState.setUsername(username);
-        globalState.setEmail(email);
-        globalState.setUserId(userId);
-        globalState.setToken(token);
+      final String token = responseData['token'] ?? '';
+      final String email = responseData['email'] ?? '';
+      final String username = responseData['username'] ?? enteredUsername;
+      final String userId = responseData['_id'];
+      final String userImage = responseData['userImage'] ?? '';
 
-        _saveUsername();
+      final globalState = Provider.of<GlobalState>(context, listen: false);
+      globalState.setUsername(username);
+      globalState.setEmail(email);
+      globalState.setUserId(userId);
+      globalState.setToken(token);
 
-        setState(() {
-          showInvalidCredentials = false;
-          isNetworkError = false;
-        });
+      _saveUsername();
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(token: token, username: username),
-          ),
-        );
-      } else if (response.statusCode == 401) {
-        setState(() {
-          showInvalidCredentials = true;
-          isNetworkError = false;
-        });
-      } else {
-        setState(() {
-          showInvalidCredentials = false;
-          isNetworkError = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Server error: ${response.statusCode}')),
-        );
-      }
-    } catch (error) {
       setState(() {
         showInvalidCredentials = false;
-        isNetworkError = true;
+        isNetworkError = false;
       });
-      print('Login error: $error');
-    } finally {
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            userId: userId,
+            username: username,
+            userImageUrl: userImage,
+            token: token,
+          ),
+        ),
+      );
+    } else if (response.statusCode == 401) {
       setState(() {
-        _isLoading = false;
+        showInvalidCredentials = true;
+        isNetworkError = false;
       });
+    } else {
+      setState(() {
+        showInvalidCredentials = false;
+        isNetworkError = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Server error: ${response.statusCode}')),
+      );
     }
+  } catch (error) {
+    setState(() {
+      showInvalidCredentials = false;
+      isNetworkError = true;
+    });
+    print('Login error: $error');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

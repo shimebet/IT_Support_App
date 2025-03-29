@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
 import 'auth/login.dart';
 import 'package:provider/provider.dart';
 import 'global_state.dart';
@@ -23,7 +22,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
-        '/home': (context) =>  HomePage(token: '', username: '',),
       },
     );
   }

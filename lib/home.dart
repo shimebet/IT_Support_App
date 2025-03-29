@@ -4,20 +4,25 @@ import 'package:intl/intl.dart';
 import 'footer/it_support_solution.dart';
 import 'footer/issue_report_page.dart';
 import 'body/exchangerate.dart';
-import 'auth/login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../global_state.dart';
 import 'AdminHomePage.dart';
+import 'UpdateProfilePage.dart';
+
+
 class HomePage extends StatefulWidget {
   final String token;
   final String username; // Add this
-
+ final String userId;
+  final String userImageUrl;
    const HomePage({
     super.key,
     required this.token,
-    required this.username, // Add this
+    required this.username, 
+    required this.userId,
+    required this.userImageUrl,
   });
   @override
   _HomePageState createState() => _HomePageState();
@@ -162,16 +167,19 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(builder: (context) => IssueReportPage(token: widget.token)),
     );
   }
-  //   void _navigateToAdminHomePage(BuildContext context) {
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute(builder: (context) => AdminHomePage(token: widget.token)),
-  //   );
-  // }
-  void _navigateToLoginWithPinPage(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-    );
-  }
+
+void _navigateToUpdateProfilePage(BuildContext context) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => UpdateProfilePage(
+        userId: widget.userId,
+        currentUsername: widget.username,
+        currentImageUrl: widget.userImageUrl,
+        token: widget.token,
+      ),
+    ),
+  );
+}
 
     void _navigateToAdminPage(BuildContext context) {
     if (role == 'Admin') {
@@ -266,24 +274,16 @@ class _HomePageState extends State<HomePage> {
                 _navigateToAdminPage(context);
               },
             ),
-                             ListTile(
-                    leading: const Icon(Icons.edit,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                   title: const Text('Edit Profile'),
-                    onTap: () {
-                      // Navigator.of(context).pop(); // Close the drawer
-                      // _navigateToBillPaymentPage(context);
-                    },
-                  ),
-                                    ListTile(
-                     leading: const Icon(Icons.login,
-                        color: Color.fromARGB(255, 143, 4, 120)),
-                     title: const Text('Change PIN'),
-                    onTap: () {
-                      Navigator.of(context).pop(); // Close the drawer
-                      _navigateToLoginWithPinPage(context);
-                    },
-                  ),
+          ListTile(
+            leading: const Icon(Icons.person, color: Color.fromARGB(255, 143, 4, 120)),
+            title: const Text('Edit Profile'),
+            onTap: () {
+              Navigator.of(context).pop(); // Close the drawer
+              _navigateToUpdateProfilePage(context);
+            },
+          ),
+
+
               ListTile(
                 leading: const Icon(Icons.logout,
                     color: Color.fromARGB(255, 143, 4, 120)),
