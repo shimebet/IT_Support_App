@@ -3,13 +3,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 import 'footer/it_support_solution.dart';
 import 'footer/issue_report_page.dart';
-import 'body/exchangerate.dart';
+import 'body/ATM_related_issue.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import '../global_state.dart';
-import 'AdminHomePage.dart';
-import 'UpdateProfilePage.dart';
+import 'global_state.dart';
+import 'admin/AdminHomePage.dart';
+import 'side_bar/UpdateProfilePage.dart';
+import 'body/Network_related_issue.dart';
+import 'body/Computer_related_issue.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -165,6 +167,17 @@ class _HomePageState extends State<HomePage> {
   void _navigateToMiniAppsPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => IssueReportPage(token: widget.token)),
+    );
+  }
+
+  void _navigateToNetworkRelatedIssuePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => NetworkRelatedIssuePage(token: widget.token)),
+    );
+  }
+  void _navigateToComputerRelatedIssuePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => ComputerRelatedIssuePage(token: widget.token)),
     );
   }
 
@@ -421,7 +434,7 @@ void _navigateToUpdateProfilePage(BuildContext context) {
             icon: const Icon(Icons.wifi,
                 size: 30, color: Color.fromRGBO(5, 28, 238, 0.973)),
             onPressed: () {
-              // _navigateToTransferModulePage(context);
+              _navigateToNetworkRelatedIssuePage(context);
             },
           ),
         ),
@@ -448,7 +461,7 @@ void _navigateToUpdateProfilePage(BuildContext context) {
             icon: const Icon(Icons.computer,
                 size: 30, color: Color.fromRGBO(40, 3, 247, 0.993)),
             onPressed: () {
-              // _navigateToBillPaymentModulePage(context);
+              _navigateToComputerRelatedIssuePage(context);
             },
           ),
         ),

@@ -5,7 +5,7 @@ import 'dart:convert';
 class AdminHomePage extends StatefulWidget {
   final String token;
 
-  const AdminHomePage({Key? key, required this.token}) : super(key: key);
+  const AdminHomePage({super.key, required this.token});
 
   @override
   State<AdminHomePage> createState() => _AdminHomePageState();

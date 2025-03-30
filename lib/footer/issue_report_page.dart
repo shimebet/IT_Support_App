@@ -87,7 +87,7 @@ Future<void> _pickTxtFile() async {
     return;
   }
 
-  final typeGroup = XTypeGroup(label: 'Text Files', extensions: ['txt']);
+  const typeGroup = XTypeGroup(label: 'Text Files', extensions: ['txt']);
   final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
 
   if (file != null) {
