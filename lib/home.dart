@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 import 'footer/it_support_solution.dart';
 import 'footer/issue_report_page.dart';
-import 'body/ATM_related_issue.dart';
+import 'footer/exchange_rate.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -12,6 +12,7 @@ import 'admin/AdminHomePage.dart';
 import 'side_bar/UpdateProfilePage.dart';
 import 'body/Network_related_issue.dart';
 import 'body/Computer_related_issue.dart';
+import 'body/ATM_related_issue.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -175,6 +176,12 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(builder: (context) => NetworkRelatedIssuePage(token: widget.token)),
     );
   }
+ void _navigateToATMRelatedIssuePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => NetworkRelatedIssuePage(token: widget.token)),
+    );
+  }
+
   void _navigateToComputerRelatedIssuePage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => ComputerRelatedIssuePage(token: widget.token)),
@@ -488,7 +495,7 @@ void _navigateToUpdateProfilePage(BuildContext context) {
             icon: const Icon(Icons.atm,
                 size: 30, color: Color.fromRGBO(66, 3, 240, 0.952)),
             onPressed: () {
-              // _navigateToTopUpPage(context);
+              _navigateToATMRelatedIssuePage(context);
             },
           ),
         ),

@@ -1,178 +1,123 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class ExchangeRatePage extends StatefulWidget {
-  const ExchangeRatePage({super.key, required this.token});
-  final String token; // Not needed for this API but kept for consistency
+class ATMRelatedIssuePage extends StatefulWidget {
+  final String token;
+
+  const ATMRelatedIssuePage({super.key, required this.token});
 
   @override
-  _ExchangeRatePageState createState() => _ExchangeRatePageState();
+  State<ATMRelatedIssuePage> createState() => _ATMRelatedIssuePageState();
 }
 
-class _ExchangeRatePageState extends State<ExchangeRatePage> {
-  final formKey = GlobalKey<FormState>();
-  String? selectedCurrency;
-  double? rate;
-  List<String> currencies = [];
-  Map<String, double> conversionRates = {};
-  bool loading = true;
-  bool showTable = false;
+class _ATMRelatedIssuePageState extends State<ATMRelatedIssuePage> {
+  List<Map<String, dynamic>> _filteredIssues = [];
+  bool _isLoading = true;
+
+  final List<String> _atmKeywords = [
+    'dispenser',
+    'cardjam',
+    'notejam',
+    'softwareinstallation',
+    '1stcasset',
+    '2ndcasset',
+    '3rdcasset',
+    'camera',
+    'carriage',
+    'ej',
+    'pccore',
+    'powersupplydevice',
+    'powersupplypccore',
+    'shitter',
+  ];
 
   @override
   void initState() {
     super.initState();
-    fetchExchangeRates();
+    _fetchFilteredIssues();
   }
 
-  Future<void> fetchExchangeRates() async {
-    setState(() {
-      loading = true;
-    });
+  bool _titleContainsATMKeyword(String title) {
+    final lowerTitleNoSpaces = title.toLowerCase().replaceAll(' ', '');
+    return _atmKeywords.any((keyword) => lowerTitleNoSpaces.contains(keyword));
+  }
 
+  Future<void> _fetchFilteredIssues() async {
+    final url = Uri.parse('https://node-api-g7fs.onrender.com/api/support');
     try {
       final response = await http.get(
-        Uri.parse('https://v6.exchangerate-api.com/v6/c2f76c38dc9ac10fb7a48d9d/latest/USD'),
+        url,
+        headers: {'Authorization': 'Bearer ${widget.token}'},
       );
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final List<dynamic> issues = jsonDecode(response.body);
 
-        final rawRates = Map<String, dynamic>.from(data['conversion_rates']);
-        final rates = rawRates.map(
-          (key, value) => MapEntry(key, (value as num).toDouble()),
-        );
+        final List<Map<String, dynamic>> atmIssues = issues
+            .where((issue) {
+              final title = issue['issueTitle']?.toString() ?? '';
+              return _titleContainsATMKeyword(title);
+            })
+            .cast<Map<String, dynamic>>()
+            .toList();
 
         setState(() {
-          conversionRates = rates;
-          currencies = rates.keys.toList();
-          loading = false;
+          _filteredIssues = atmIssues;
+          _isLoading = false;
         });
       } else {
-        throw Exception('Failed to load exchange rates');
+        throw Exception('Failed to load issues');
       }
     } catch (e) {
-      print('Error fetching rates: $e');
-      setState(() {
-        loading = false;
-      });
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to fetch issues')),
+      );
     }
   }
 
-  void onCurrencySelected(String? value) {
-    setState(() {
-      selectedCurrency = value;
-      rate = conversionRates[value];
-    });
-  }
-
-  void onViewPressed() {
-    setState(() {
-      showTable = !showTable;
-    });
+  Widget _buildIssueCard(Map<String, dynamic> issue) {
+    return Card(
+      margin: const EdgeInsets.all(10),
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              issue['issueTitle'] ?? '',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text("Description: ${issue['issueDescription'] ?? ''}"),
+            const SizedBox(height: 8),
+            if ((issue['issueSolution'] ?? '').isNotEmpty)
+              Text("Solution: ${issue['issueSolution']}"),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final String formattedDate = DateFormat('MM/dd/yyyy').format(DateTime.now());
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Exchange Rate',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 26.0,
-          ),
-        ),
+        title: const Text('ATM Related Issues'),
         backgroundColor: const Color.fromARGB(255, 134, 23, 116),
       ),
-      body: loading
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: formKey,
-                child: ListView(
-                  children: [
-                    Center(
-                      child: Text(
-                        'Date: $formattedDate',
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 151, 2, 126),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Select Currency (vs USD)',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: currencies.map((currency) {
-                        return DropdownMenuItem(
-                          value: currency,
-                          child: Text(currency),
-                        );
-                      }).toList(),
-                      onChanged: onCurrencySelected,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a currency';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Exchange Rate (1 USD = ?)',
-                        border: OutlineInputBorder(),
-                      ),
-                      readOnly: true,
-                      controller: TextEditingController(
-                        text: rate?.toStringAsFixed(4) ?? '',
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          onViewPressed();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: const Color.fromARGB(255, 170, 5, 134),
-                      ),
-                      child: Text(showTable ? 'Hide Table' : 'View All'),
-                    ),
-                    const SizedBox(height: 16),
-                    showTable
-                        ? SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: DataTable(
-                              columns: const [
-                                DataColumn(label: Text('Currency')),
-                                DataColumn(label: Text('Rate (1 USD = ?)')),
-                              ],
-                              rows: conversionRates.entries.map((entry) {
-                                return DataRow(cells: [
-                                  DataCell(Text(entry.key)),
-                                  DataCell(Text(entry.value.toStringAsFixed(4))),
-                                ]);
-                              }).toList(),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ],
+          : _filteredIssues.isEmpty
+              ? const Center(child: Text('No ATM-related issues found.'))
+              : ListView.builder(
+                  itemCount: _filteredIssues.length,
+                  itemBuilder: (context, index) {
+                    return _buildIssueCard(_filteredIssues[index]);
+                  },
                 ),
-              ),
-            ),
     );
   }
 }
