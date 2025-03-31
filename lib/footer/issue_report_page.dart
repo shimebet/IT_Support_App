@@ -14,30 +14,28 @@ class IssueReportPage extends StatefulWidget {
   @override
   _IssueReportPageState createState() => _IssueReportPageState();
 }
- bool _txtFileUploaded = false;
-bool _imageUploaded = false;
 
 class _IssueReportPageState extends State<IssueReportPage> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _issueTitleController = TextEditingController();
   final TextEditingController _issueDescriptionController = TextEditingController();
   final TextEditingController _issueSolutionController = TextEditingController();
 
-  String _selectedIssueTitle = 'Computer Issues';
   File? _selectedImage;
   String? _base64Image;
-
-  final List<String> _issueCategories = [
-    'Computer Issues',
-    'Printer Issues',
-    'Software Issues',
-    'Network Issues',
-    'Other',
-  ];
+  bool _txtFileUploaded = false;
+  bool _imageUploaded = false;
 
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
 
   Map<String, String> _buildHeaders() {
     return {
@@ -46,63 +44,84 @@ class _IssueReportPageState extends State<IssueReportPage> {
     };
   }
 
-Future<void> _pickImage() async {
-  if (_imageUploaded) {
-    setState(() {
-      _selectedImage = null;
-      _base64Image = null;
-      _imageUploaded = false;
-    });
-    return;
-  }
+  Future<void> _fetchUserProfile() async {
+    final url = Uri.parse('https://node-api-g7fs.onrender.com/api/users/me');
 
-  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-  if (image != null) {
-    final compressedBytes = await FlutterImageCompress.compressWithFile(
-      image.path,
-      quality: 40,
-    );
-
-    if (compressedBytes != null) {
-      setState(() {
-        _selectedImage = File(image.path);
-        _base64Image = base64Encode(compressedBytes);
-        _imageUploaded = true;
-      });
-    } else {
+    try {
+      final response = await http.get(url, headers: _buildHeaders());
+      if (response.statusCode == 200) {
+        final userData = jsonDecode(response.body);
+        setState(() {
+          _firstNameController.text = userData['firstName'] ?? '';
+          _lastNameController.text = userData['lastName'] ?? '';
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to fetch user profile')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Image compression failed.')),
+        const SnackBar(content: Text('Error fetching user data')),
       );
     }
   }
-}
 
+  Future<void> _pickImage() async {
+    if (_imageUploaded) {
+      setState(() {
+        _selectedImage = null;
+        _base64Image = null;
+        _imageUploaded = false;
+      });
+      return;
+    }
 
-Future<void> _pickTxtFile() async {
-  if (_txtFileUploaded) {
-    setState(() {
-      _txtFileUploaded = false;
-      _issueSolutionController.clear();
-    });
-    return;
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final compressedBytes = await FlutterImageCompress.compressWithFile(
+        image.path,
+        quality: 40,
+      );
+
+      if (compressedBytes != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+          _base64Image = base64Encode(compressedBytes);
+          _imageUploaded = true;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Image compression failed.')),
+        );
+      }
+    }
   }
 
-  const typeGroup = XTypeGroup(label: 'Text Files', extensions: ['txt']);
-  final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
+  Future<void> _pickTxtFile() async {
+    if (_txtFileUploaded) {
+      setState(() {
+        _txtFileUploaded = false;
+        _issueSolutionController.clear();
+      });
+      return;
+    }
 
-  if (file != null) {
-    final content = await file.readAsString();
-    setState(() {
-      _issueSolutionController.text = content;
-      _txtFileUploaded = true;
-    });
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('No file selected.')),
-    );
+    const typeGroup = XTypeGroup(label: 'Text Files', extensions: ['txt']);
+    final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
+
+    if (file != null) {
+      final content = await file.readAsString();
+      setState(() {
+        _issueSolutionController.text = content;
+        _txtFileUploaded = true;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No file selected.')),
+      );
+    }
   }
-}
-
 
   Future<void> _showConfirmationDialog() async {
     final confirmed = await showDialog<bool>(
@@ -153,7 +172,7 @@ Future<void> _pickTxtFile() async {
     final body = jsonEncode({
       "firstName": _firstNameController.text.trim(),
       "lastName": _lastNameController.text.trim(),
-      "issueTitle": _selectedIssueTitle,
+      "issueTitle": _issueTitleController.text.trim(),
       "issueDescription": _issueDescriptionController.text.trim(),
       "issueSolution": _issueSolutionController.text.trim(),
       "issueImage": _base64Image ?? "",
@@ -167,6 +186,8 @@ Future<void> _pickTxtFile() async {
         setState(() {
           _selectedImage = null;
           _base64Image = null;
+          _imageUploaded = false;
+          _txtFileUploaded = false;
         });
         await _showSuccessDialog();
       } else {
@@ -202,23 +223,20 @@ Future<void> _pickTxtFile() async {
             children: [
               TextFormField(
                 controller: _firstNameController,
+                readOnly: true,
                 decoration: const InputDecoration(labelText: 'First Name'),
-                validator: (value) => value!.isEmpty ? 'Enter first name' : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _lastNameController,
+                readOnly: true,
                 decoration: const InputDecoration(labelText: 'Last Name'),
-                validator: (value) => value!.isEmpty ? 'Enter last name' : null,
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: _selectedIssueTitle,
+              TextFormField(
+                controller: _issueTitleController,
                 decoration: const InputDecoration(labelText: 'Issue Title'),
-                items: _issueCategories
-                    .map((issue) => DropdownMenuItem(value: issue, child: Text(issue)))
-                    .toList(),
-                onChanged: (value) => setState(() => _selectedIssueTitle = value!),
+                validator: (value) => value!.isEmpty ? 'Enter issue title' : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -241,7 +259,6 @@ Future<void> _pickTxtFile() async {
                   label: Text(_txtFileUploaded ? 'Remove File' : 'Upload .txt File'),
                 ),
               ),
-
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -260,7 +277,6 @@ Future<void> _pickTxtFile() async {
                   ),
                 ],
               ),
-
               if (_selectedImage != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),

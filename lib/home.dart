@@ -13,6 +13,9 @@ import 'side_bar/UpdateProfilePage.dart';
 import 'body/Network_related_issue.dart';
 import 'body/Computer_related_issue.dart';
 import 'body/ATM_related_issue.dart';
+import 'body/Printer_related_issue.dart';
+import 'body/Software_related_issue.dart';
+import 'body/Access_related_issue.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -178,13 +181,30 @@ class _HomePageState extends State<HomePage> {
   }
  void _navigateToATMRelatedIssuePage(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => NetworkRelatedIssuePage(token: widget.token)),
+      MaterialPageRoute(builder: (context) => ATMRelatedIssuePage(token: widget.token)),
     );
   }
 
   void _navigateToComputerRelatedIssuePage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => ComputerRelatedIssuePage(token: widget.token)),
+    );
+  }
+
+  void _navigateToPrinterRelatedIssuePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => PrinterRelatedIssuePage(token: widget.token)),
+    );
+  }
+    void _navigateToSoftwareRelatedIssuePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => SoftwareRelatedIssuePage(token: widget.token)),
+    );
+  }
+
+      void _navigateToAccessRelatedIssuePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => AccessRelatedIssuePage(token: widget.token)),
     );
   }
 
@@ -530,7 +550,7 @@ void _navigateToUpdateProfilePage(BuildContext context) {
               color: Color.fromRGBO(27, 2, 247, 0.986),
             ),
             onPressed: () {
-              // _navigateToHelpPage(context);
+               _navigateToPrinterRelatedIssuePage(context);
             },
           ),
         ),
@@ -559,7 +579,7 @@ void _navigateToUpdateProfilePage(BuildContext context) {
           color: Color.fromRGBO(26, 1, 250, 1),
         ),
         onPressed: () {
-          // _navigateToWalletTransferPage(context);
+          _navigateToSoftwareRelatedIssuePage(context);
         },
       ),
     ),
@@ -588,7 +608,7 @@ void _navigateToUpdateProfilePage(BuildContext context) {
               color: Color.fromRGBO(26, 1, 250, 1),
             ),
             onPressed: () {
-              // _navigateToGovernmentServicePage(context);
+              _navigateToAccessRelatedIssuePage(context);
             },
           ),
         ),
